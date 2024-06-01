@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/govern.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+<%
+function getStatus(n) {
+	if(n==0)  { return 'Draft'; }
+	if(n==1)  { return 'Rejected'; }
+	if(n==2)  { return 'Active'; }
+	if(n==3)  { return 'Closed'; }
+	return '?';
+}
+function getStatusClass(n) {
+	return getStatus(n).toLowerCase();
+}
+function getDate(d) {
+	return new Date(d).toLocaleString();
+}
+function toNumber(n) {
+	return n.toLocaleString();
+}
+%>
+	<h1 class="title">Governance</h1>
+	<div id="proposals">
+		<h4>DaVinci Mainnet</h4>
+		<h2><%=list.length%> Proposal<%=list.length==1?'':'s'%></h2>
+		<% if (config.user) { %>
+		<div id="prop-action">
+			<button class="base" onclick="window.location.href='/proposal'">NEW PROPOSAL</button>
+		</div>
+  		<% } %>
+		<div id="prop-top">
+			<a href="/governance/all">All</a>
+			<a href="/governance/active">Active</a>
+			<a href="/governance/draft">Drafts</a>
+			<a href="/governance/closed">Closed</a>
+			<a href="/governance/rejected">Rejected</a>
+		</div>
+		<div id="prop-list">
+		<% if (!list || list.length<1) { %>
+			<a class="prop-item" href="/proposal">
+				<li><h3>There are no proposals yet</h3></li>
+				<li><span class="prop-author">Be the first to create one!</span></li>
+			</a>
+  		<% } else { %>
+			<% list.forEach(function(item){ %>
+			<a class="prop-item" href="/proposal/<%=item.address%>">
+				<li><h5 class="status <%=getStatusClass(item.status)%>"><%=getStatus(item.status)%></h5> <h3><%=item.title%></h3></li>
+				<% if (item.status==1) { %><li><warn>Reason: <%=item.reason%></warn> By <%=item.moderator.substr(0,10)%></li> <% } %>
+				<li><span><span class="">Voting from <%=getDate(item.inidate)%> to <%=getDate(item.enddate)%></span></li>
+				<li><span>Author <%=item.name||'Anonymous'%></span> - Quorum <%=toNumber(item.quorum)%> votes</span></li>
+			</a>
+	  		<% }); %>
+  		<% } %>
+		</div>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+async function main() {
+	await startDavinci();
+}
+window.onload = main;
+// END
+</script>
+</body>
+</html>

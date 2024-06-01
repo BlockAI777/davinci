@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+	<link rel="stylesheet" type="text/css" href="/styles/artists.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<%
+function dateShort(date) {
+	var opt = {
+		weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    };
+	return (new Date(date)).toLocaleDateString('en',opt);
+}
+%>
+<main>
+<div class="wrap">
+	<div class="gallery">
+		<h1 class="title"><a name="davinci">daVinci Gallery</a></h1>
+		<% if(list['davinci']) { data = list['davinci']; %>
+			<p>
+				<b>DaVinci Gallery is showcasing the artworks of <%=data.artist.name%></b><br>
+				From <%=dateShort(data.info.inidate)%> to <%=dateShort(data.info.enddate)%>
+			</p>
+			<div class="avatar-box"><img id="avatar" src="/uploads/avatars/<%=data.artist.avatar%>"></div>
+			<h2><%=data.artist.tagline%></h2>
+			<div id="artist-bio"><%=data.artist.description%></div>
+
+			<h1>Collection</h1>
+			<div class="artworks">
+				<% if (!data || data.artworks.length<1) { %>
+		  			<h3>This artist has no artworks on exhibition</h3>
+		  		<% } else { %>
+					<% data.artworks.forEach(function(item){ %>
+			    		<%- include('explore-item.html', {item:item}) %>
+			  		<% }); %>
+		  		<% } %>
+			</div>
+		<% } else { %>
+			<div class="artworks">
+				<img class="artwork" src="/uploads/artwork/davinci0.jpg">
+				<img class="artwork" src="/uploads/artwork/davinci1.jpg">
+				<img class="artwork" src="/uploads/artwork/davinci2.jpg">
+			</div>
+			<p>daVinci Gallery is available for exhibitions at 100 VINCI per day<br>
+			   Contact our curator for more details<br>
+			   curator@davinci.gallery
+			</p>
+			<!-- <button class="base" disabled>COMING SOON</button> -->
+		<% } %>
+	</div>
+</div>
+<div class="wrap">
+	<div class="gallery">
+		<h1 class="title"><a name="rembrandt">Rembrandt Gallery</a></h1>
+		<% if(list['rembrandt']) { data = list['rembrandt']; %>
+			<p>
+				<b>Rembrandt Gallery is showcasing the artworks of <%=data.artist.name%></b><br>
+				From <%=dateShort(data.info.inidate)%> to <%=dateShort(data.info.enddate)%>
+			</p>
+			<div class="avatar-box"><img id="avatar" src="/uploads/avatars/<%=data.artist.avatar%>"></div>
+			<h2><%=data.artist.tagline%></h2>
+			<div id="artist-bio"><%=data.artist.description%></div>
+
+			<h1>Collection</h1>
+			<div class="artworks">
+				<% if (!data || data.artworks.length<1) { %>
+		  			<h3>This artist has no artworks on exhibition</h3>
+		  		<% } else { %>
+					<% data.artworks.forEach(function(item){ %>
+			    		<%- include('explore-item.html', {item:item}) %>
+			  		<% }); %>
+		  		<% } %>
+			</div>
+		<% } else { %>
+			<div class="artworks">
+				<img class="artwork" src="/uploads/artwork/rembrandt0.jpg">
+				<img class="artwork" src="/uploads/artwork/rembrandt1.jpg">
+				<img class="artwork" src="/uploads/artwork/rembrandt2.jpg">
+			</div>
+			<p>Rembrandt Gallery is available for exhibitions at 50 VINCI per day<br>
+			   Contact our curator for more details<br>
+			   curator@davinci.gallery
+			</p>
+			<!-- <button class="base" disabled>COMING SOON</button> -->
+		<% } %>
+	</div>
+</div>
+<div class="wrap">
+	<div class="gallery">
+		<h1 class="title"><a name="vangogh">Van Gogh Gallery</a></h1>
+		<% if(list['vangogh']) { data = list['vangogh']; %>
+			<p>
+				<b>Van Gogh Gallery is showcasing the artworks of <%=data.artist.name%></b><br>
+				From <%=dateShort(data.info.inidate)%> to <%=dateShort(data.info.enddate)%>
+			</p>
+			<div class="avatar-box"><img id="avatar" src="/uploads/avatars/<%=data.artist.avatar%>"></div>
+			<h2><%=data.artist.tagline%></h2>
+			<div id="artist-bio"><%=data.artist.description%></div>
+
+			<h1>Collection</h1>
+			<div class="artworks">
+				<% if (!data || data.artworks.length<1) { %>
+		  			<h3>This artist has no artworks on exhibition</h3>
+		  		<% } else { %>
+					<% data.artworks.forEach(function(item){ %>
+			    		<%- include('explore-item.html', {item:item}) %>
+			  		<% }); %>
+		  		<% } %>
+			</div>
+		<% } else { %>
+			<div class="artworks">
+				<img class="artwork" src="/uploads/artwork/vangogh0.jpg">
+				<img class="artwork" src="/uploads/artwork/vangogh1.jpg">
+				<img class="artwork" src="/uploads/artwork/vangogh2.jpg">
+			</div>
+			<p>Van Gogh Gallery is available for exhibitions at 10 VINCI per day<br>
+			   Contact our curator for more details<br>
+			   curator@davinci.gallery
+			</p>
+			<!-- <button class="base" disabled>COMING SOON</button> -->
+		<% } %>
+	</div>
+</div>
+<div>
+	<h2>Reserve our galleries!</h2>
+	<p>Our galleries are always available for artists to exhibit their artworks</p>
+		<li>Da Vinci gallery for 100 VINCI per day</li>
+		<li>Rembrandt gallery for 50 VINCI per day</li>
+		<li>Van Gogh gallery for 10 VINCI per day</li>
+	<p>Contact our curator for details curator@davinci.gallery</p>
+	<% if(config.isAdmin) { %>
+		<p><a href="/reserve">RESERVE NOW</a><p>&nbsp;</p></p>
+	<% } %>
+</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/Market3.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/explore.js"></script>
+</body>
+</html>

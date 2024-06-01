@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/lists.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main class="reported">
+	<h1 class="title">Last Transfers</h1>
+	<div class="list">
+		<% if (!list || list.length<1) { %>
+		<div class="no-list">
+  			<h3>No Artworks Transferred</h3>
+		</div>
+  		<% } else { %>
+			<% list.forEach(function(item){ %>
+				<div class="item hbox">
+					<a href="/view/<%=item.artwork%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>"></a>
+					<div class="vbox">
+						<h1><%=item.name||'Unnamed'%></h1>
+						<li><label>Collection:</label> <a class="pre" href="/explore/collection/<%=item.collection%>" target="_blank"><%=item.collection%></a></li>
+						<li><label>Token Id:  </label> <a class="pre" href="/view/<%=item.tokenid%>" target="_blank"><%=item.tokenid%></a></li>
+						<li><label>Seller:    </label> <a class="pre" href="/profile/<%=item.sender%>" target="_blank"><%=item.sender%></a></li>
+						<li><label>Buyer:     </label> <a class="pre" href="/profile/<%=item.receiver%>" target="_blank"><%=item.receiver%></a></li>
+						<li><label>Price:     </label> <span><%=parseInt(item.value)%></span></li>
+						<li><label>Time:      </label> <span><%=item.created%></span></li>
+					</div>
+				</div>
+	  		<% }); %>
+  		<% } %>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+</body>
+</html>

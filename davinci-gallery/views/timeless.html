@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+	<link rel="stylesheet" type="text/css" href="/styles/create.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+	<h1 class="title">Create Collectibles</h1>
+	<!-- <form id="form" class="form" method="post" action="upload" enctype="multipart/form-data"> -->
+	<div class="token-form">
+		<div class="collection-box">
+			<li><b>Choose collection</b></li>
+			<li><small>Create a new or pick one of your collections if you want your artworks to be grouped like Abstract paintings or Album songs. Pick no collection if you want a stand-alone item that will be added to our DaVinci collections</small></li>
+			<div id="collections" class="collection-list">
+				<div id="new-collection" class="collection-thumb" onclick="onNewCollection(this)">
+					<img src="/media/new.jpg">
+					<label>New</label>
+				</div>
+				<div id="public-collection" class="collection-thumb selected" data-address="public-collection" data-type="1155" data-owner="0x9a56378698892AF03674250F79DE18Ae7569BA7e" onclick="onCollection(this.dataset)">
+					<img src="/media/logobw.svg">
+					<label>DaVinci</label>
+				</div>
+				<% if(data && data.length>0) { %>
+					<% data.forEach(function(item){ %>
+						<div id="<%=item.address%>" class="collection-thumb" data-address="<%=item.address%>" data-type="<%=item.type%>" data-owner="<%=item.owner%>" onclick="onCollection(this.dataset)">
+							<img src="/uploads/thumbs/<%=item.thumbnail%>">
+							<label><%=item.name%></label>
+						</div>
+					<% }) %>
+				<% } %>
+			</div>
+		</div>
+		<div class="media-box">
+			<p><b>Choose the type of collectible you want to create</b></p>
+			<nav id="media-bar">
+				<button onclick="onSelectMedia('image')">Image</button>
+				<button onclick="onSelectMedia('model')" class="selected">3D Model</button>
+				<!--button onclick="onSelectMedia('audio')">Audio</button-->
+				<button onclick="onSelectMedia('music')">Music</button>
+				<button onclick="onSelectMedia('video')">Video</button>
+				<!--button onclick="onSelectMedia('movie')">Movie</button-->
+				<button onclick="onSelectMedia('book')">Book</button>
+				<!--button onclick="onSelectMedia('domain')" class="disabled">Domain</button-->
+			</nav>
+		</div>
+		<!--div class="token-box">
+			<p>Choose "Unique" if you want your collectible to be one of a kind or “Multiple” if you want to sell one collectible multiple times</p>
+			<div class="token-type">
+				<div id="token-type-721" class="token-type-cnt selected" onclick="onTokenType(721)">
+					<img class="token-type-img" src="/media/token_single.svg">
+					<label>Unique</label>
+					<label><small>NFT 721</small></label>
+				</div>
+				<div id="token-type-1155" class="token-type-cnt" onclick="onTokenType(1155)">
+					<img class="token-type-img" src="/media/token_multiple.svg">
+					<label>Multiple</label>
+					<label><small>NFT 1155</small></label>
+				</div>
+			</div>
+			<p>We do not own your private keys and cannot access your funds without your confirmation</p>
+		</div-->
+		<div class="upload-box hidden" id="cover">
+			<li>Upload cover image as JPG, PNG or GIF for your media</li>
+			<li><small>Maximum Size 30mb</small></li>
+			<div class="upload-cnt">
+				<div><svg viewBox="0 0 20 20" width="20px" height="20px" class=""><g fill="currentColor" fill-rule="nonzero"><path d="M16.7 12.5v3.333a.867.867 0 0 1-.867.867H4.167a.867.867 0 0 1-.867-.867V12.5a.8.8 0 1 0-1.6 0v3.333A2.467 2.467 0 0 0 4.167 18.3h11.666a2.467 2.467 0 0 0 2.467-2.467V12.5a.8.8 0 1 0-1.6 0z"></path><path d="M6.399 7.768a.8.8 0 1 0-1.131 1.131l4.166 4.167a.8.8 0 0 0 1.132 0l4.166-4.167a.8.8 0 0 0-1.131-1.131L10 11.368l-3.601-3.6z"></path><path d="M10.8 12.5v-10a.8.8 0 1 0-1.6 0v10a.8.8 0 1 0 1.6 0z"></path></g></svg></div>
+				<label id="file-name"></label>
+				<input type="file" name="tokencover" id="token-cover" class="input-file" onchange="onPreviewCover(this)">
+				<div id="cover-preview" class="hidden"><img id="cover-img" class="preview" src="#"></div>
+			</div>
+		</div>
+		<div class="upload-box">
+			<li>Upload artwork as <span id="file-type">JPG, PNG, GIF</span></li>
+			<li><small>Maximum Size 30mb</small></li>
+			<div class="upload-cnt">
+				<div><svg viewBox="0 0 20 20" width="20px" height="20px" class=""><g fill="currentColor" fill-rule="nonzero"><path d="M16.7 12.5v3.333a.867.867 0 0 1-.867.867H4.167a.867.867 0 0 1-.867-.867V12.5a.8.8 0 1 0-1.6 0v3.333A2.467 2.467 0 0 0 4.167 18.3h11.666a2.467 2.467 0 0 0 2.467-2.467V12.5a.8.8 0 1 0-1.6 0z"></path><path d="M6.399 7.768a.8.8 0 1 0-1.131 1.131l4.166 4.167a.8.8 0 0 0 1.132 0l4.166-4.167a.8.8 0 0 0-1.131-1.131L10 11.368l-3.601-3.6z"></path><path d="M10.8 12.5v-10a.8.8 0 1 0-1.6 0v10a.8.8 0 1 0 1.6 0z"></path></g></svg></div>
+				<label id="file-name"></label>
+				<input type="file" name="tokenfile" id="token-file" class="input-file" onchange="onPreviewFile(this)">
+				<div id="file-preview" class="hidden"><img id="file-img" class="preview" src="#"></div>
+			</div>
+		</div>
+		<div id="extra-files">
+			<div class="upload-box">
+				<li>Upload video as <span id="file-type2">MP4</span></li>
+				<li><small>Maximum Size 30mb</small></li>
+				<div class="upload-cnt">
+					<div><svg viewBox="0 0 20 20" width="20px" height="20px" class=""><g fill="currentColor" fill-rule="nonzero"><path d="M16.7 12.5v3.333a.867.867 0 0 1-.867.867H4.167a.867.867 0 0 1-.867-.867V12.5a.8.8 0 1 0-1.6 0v3.333A2.467 2.467 0 0 0 4.167 18.3h11.666a2.467 2.467 0 0 0 2.467-2.467V12.5a.8.8 0 1 0-1.6 0z"></path><path d="M6.399 7.768a.8.8 0 1 0-1.131 1.131l4.166 4.167a.8.8 0 0 0 1.132 0l4.166-4.167a.8.8 0 0 0-1.131-1.131L10 11.368l-3.601-3.6z"></path><path d="M10.8 12.5v-10a.8.8 0 1 0-1.6 0v10a.8.8 0 1 0 1.6 0z"></path></g></svg></div>
+					<label id="file-name2"></label>
+					<input type="file" name="tokenfile2" id="token-file2" class="input-file" onchange="onPreviewFile2(this)">
+					<div id="file-preview2" class="hidden"><img id="file-img2" class="preview" src="#"></div>
+				</div>
+			</div>
+			<div class="upload-box">
+				<li>Upload text as <span id="file-type3">JSON</span></li>
+				<li><small>Maximum Size 30mb</small></li>
+				<div class="upload-cnt">
+					<div><svg viewBox="0 0 20 20" width="20px" height="20px" class=""><g fill="currentColor" fill-rule="nonzero"><path d="M16.7 12.5v3.333a.867.867 0 0 1-.867.867H4.167a.867.867 0 0 1-.867-.867V12.5a.8.8 0 1 0-1.6 0v3.333A2.467 2.467 0 0 0 4.167 18.3h11.666a2.467 2.467 0 0 0 2.467-2.467V12.5a.8.8 0 1 0-1.6 0z"></path><path d="M6.399 7.768a.8.8 0 1 0-1.131 1.131l4.166 4.167a.8.8 0 0 0 1.132 0l4.166-4.167a.8.8 0 0 0-1.131-1.131L10 11.368l-3.601-3.6z"></path><path d="M10.8 12.5v-10a.8.8 0 1 0-1.6 0v10a.8.8 0 1 0 1.6 0z"></path></g></svg></div>
+					<label id="file-name3"></label>
+					<input type="file" name="tokenfile3" id="token-file3" class="input-file" onchange="onPreviewFile3(this)">
+					<div id="file-preview3" class="hidden"><img id="file-img3" class="preview" src="#"></div>
+				</div>
+			</div>
+			<div class="upload-box">
+				<li>Upload banner as <span id="file-type4">JPG, PNG, GIF</span></li>
+				<li><small>Maximum Size 30mb</small></li>
+				<div class="upload-cnt">
+					<div><svg viewBox="0 0 20 20" width="20px" height="20px" class=""><g fill="currentColor" fill-rule="nonzero"><path d="M16.7 12.5v3.333a.867.867 0 0 1-.867.867H4.167a.867.867 0 0 1-.867-.867V12.5a.8.8 0 1 0-1.6 0v3.333A2.467 2.467 0 0 0 4.167 18.3h11.666a2.467 2.467 0 0 0 2.467-2.467V12.5a.8.8 0 1 0-1.6 0z"></path><path d="M6.399 7.768a.8.8 0 1 0-1.131 1.131l4.166 4.167a.8.8 0 0 0 1.132 0l4.166-4.167a.8.8 0 0 0-1.131-1.131L10 11.368l-3.601-3.6z"></path><path d="M10.8 12.5v-10a.8.8 0 1 0-1.6 0v10a.8.8 0 1 0 1.6 0z"></path></g></svg></div>
+					<label id="file-name4"></label>
+					<input type="file" name="tokenfile4" id="token-file4" class="input-file" onchange="onPreviewFile4(this)">
+					<div id="file-preview4" class="hidden"><img id="file-img4" class="preview" src="#"></div>
+				</div>
+			</div>
+		</div>
+		<div class="category-box">
+			<p><b>Choose the category of your artwork</b></p>
+			<nav id="category-bar">
+				<button onclick="onSelectCategory(0)" class="selected">Digital Art</button>
+				<button onclick="onSelectCategory(1)">Paintings</button>
+				<button onclick="onSelectCategory(2)">Photos</button>
+				<button onclick="onSelectCategory(3)">Kids</button>
+				<button onclick="onSelectCategory(8)">Memes</button>
+				<button onclick="onSelectCategory(9)">Adults</button>
+			</nav>
+		</div>
+		<div class="form-fields">
+			<li>
+				<label>Name</label> 
+				<input type="textbox" class="text-long" id="token-name" placeholder="e.g. Monalisa" maxlength="40">
+				<label class="warn">Name is required</label>
+			</li>
+			<!--li>
+				<label>Symbol</label> 
+				<input type="textbox" class="text-long" id="token-symbol" placeholder="e.g. MON">
+				<label class="warn">Up to 10 chars</label>
+			</li-->
+			<li>
+				<label>Description</label> 
+				<!-- <input type="textbox" class="text-long" id="token-desc" placeholder="A few words about your collectible"> -->
+				<textarea id="token-desc" placeholder="A few words about your collectible" maxlength="1000"></textarea>
+				<label class="warn">Description is optional</label>
+			</li>
+			<li>
+				<label>Tags</label> 
+				<input type="textbox" class="text-long" id="token-tags" placeholder="Enter tags separated by spaces for better search" maxlength="100">
+				<label class="warn">Tags are optional</label>
+			</li>
+			<!--li>
+				<input type="checkbox" id="token-onsale"> 
+				<span>Put on sale</span>
+			</li>
+			<li>
+				<input type="checkbox" id="token-direct">
+				<span>Instant sale price</span>
+			</li-->
+			<li>
+				<label>Number of copies</label> 
+				<input type="textbox" class="textbox" id="token-copies" value="1">
+				<label class="warn">Number must be greater than 0</label>
+			</li>
+			<li>
+				<label>Sale Type</label>
+				<div class="option"><input type="radio" id="sale-direct"  name="saletype" value="direct" checked onclick="onSaleOption(0)"> <label for="sale-direct">Direct Sale</label></div>
+				<div class="option"><input type="radio" id="sale-auction" name="saletype" value="auction" onclick="onSaleOption(1)"> <label for="sale-auction">Auction</label></div>
+				<div class="option"><input type="radio" id="sale-nosale"  name="saletype" value="nosale" onclick="onSaleOption(2)"> <label for="sale-nosale">Not For Sale</label></div>
+			</li>
+			<div id="sale-cnt">
+				<div id="sale-box">
+					<li id="token-price-box">
+						<label id="sale-price">Sale Price</label> 
+						<div>
+							<input type="textbox" id="token-price" class="textbox" value="10" onkeyup="calcPrice()">
+							<span id="price-usd">0.00 USD</span>
+						</div>
+					</li>
+				</div>
+				<label id="sale-warn" class="note">Collectible is available for sale</label>
+			</div>
+			<div id="auction-cnt">
+				<div id="auction-box">
+					<li id="reserve-box">
+						<label id="reserve-label">Reserve Price</label> 
+						<input type="textbox" id="token-reserve" class="textbox" value="20">
+					</li>
+					<li id="auction-ini-box">
+						<label>Auction Starts</label> 
+						<input type="datetime-local" id="auction-ini" class="textbox" value="<%=new Date().toJSON().substr(0,16)%>">
+					</li>
+					<li id="auction-end-box">
+						<label>Auction Ends</label> 
+						<input type="datetime-local" id="auction-end" class="textbox" value="<%=new Date().toJSON().substr(0,16)%>">
+					</li>
+				</div>
+				<label id="sale-warn" class="note">Minimum price the seller is willing to accept. If the reserve price is not met the auction will be considered invalid</label>
+			</div>
+			<li>
+				<label>Royalties %</label> 
+				<input type="textbox" class="textbox" id="token-percent" value="10">
+				<label class="note">Money you will collect for life on every secondary sale up to 50%</label>
+				<label class="warn">Number must be greater than 0</label>
+			</li>
+			<li>
+				<input type="checkbox" id="token-unlock">
+				<span>Unlock once purchased</span>
+			</li>
+			<li id="token-unlock-box">
+				<label>Unlock code</label> 
+				<input type="textbox" class="text-long" id="token-code" placeholder="Digital key, code to redeem or link to file" maxlength="255">
+				<label class="note">Unlockable content  only becomes visible after a transfer of ownership (i.e. selling or gifting your NFT). Artists use this feature to include high resolution files, videos, secret messages, etc.</label>
+				<label class="warn">Digital code is required to unlock</label>
+			</li>
+			<!--li>
+				<label>Properties</label> 
+				<input type="textbox" class="text-inline" id="token-prop1"  placeholder="Property name"> 
+				<input type="textbox" class="text-inline" id="token-value1" placeholder="Property value">
+			</li-->
+			<li>
+				<div><input type="checkbox" id="token-adults"> <span>Adult content not suitable for kids</span></div>
+				<label class="adult-warn">Adult content will be shown in its own /private gallery</label>
+			</li>
+
+
+		<!-- <input type="checkbox" id="timeless-check" onchange="toggleTimeless()"> <label for="timeless-check" style="display:inline-block">TIMELESS EVENT</label> -->
+		<h2 style="margin-top:60px">Timeless Event</h2>
+		<fieldset id="timeless-form" style="margin-top: 40px; padding: 20px 40px">
+			<li>
+				<label>Title</label> 
+				<input type="textbox" class="text-long" id="timeless-ttit" maxlength="100">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>Location</label> 
+				<input type="textbox" class="text-long" id="timeless-tloc" maxlength="100">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>Start Date</label> 
+				<input type="datetime-local" id="timeless-tini" class="textbox" value="<%=new Date().toJSON().substr(0,16)%>">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>End Date</label> 
+				<input type="datetime-local" id="timeless-tend" class="textbox" value="<%=new Date().toJSON().substr(0,16)%>">
+				<label class="warn"></label>
+			</li>
+			<hr>
+			<li>
+				<label>Organizer</label> 
+				<input type="textbox" class="text-long" id="timeless-torg" maxlength="100">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>Website</label> 
+				<input type="textbox" class="text-long" id="timeless-tweb" maxlength="255">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>Bio</label> 
+				<input type="textbox" class="text-long" id="timeless-tbio" maxlength="255">
+				<label class="warn"></label>
+			</li>
+			<!-- 
+			<hr>
+			<li>
+				<label>IPFS Link #1</label> 
+				<input type="textbox" class="text-long" id="timeless-tlnk1" maxlength="255">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>IPFS Link #2</label> 
+				<input type="textbox" class="text-long" id="timeless-tlnk2" maxlength="255">
+				<label class="warn"></label>
+			</li>
+			<li>
+				<label>IPFS Link #3</label> 
+				<input type="textbox" class="text-long" id="timeless-tlnk3" maxlength="255">
+				<label class="warn"></label>
+			</li>
+			 -->
+		</fieldset>
+
+		</div>
+		<div>
+			<% if(config.inactive) { %>
+				<div id="submit-box"><button id="submit-token" disabled>INACTIVE</button></div>
+				<div id="statusbar"><%=config.reason || 'Creating tokens is disabled'%></div>
+			<% } else { %>
+				<div id="submit-box"><button id="submit-token" onclick="onFormSubmit()">CREATE</button></div>
+				<div id="statusbar">Creating a collectible will ask you to sign one transaction with your wallet</div>
+			<% } %>
+		</div>
+		<div class="note">Please do not post copyrighted material or you will get banned from our platform</div>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script>
+let collections = <%- JSON.stringify(data)||[]%>;
+</script>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/timeless.js"></script>
+<script>
+session.oneusd = <%- JSON.stringify(config.oneusd)||{price:0} %>;
+</script>
+</body>
+</html>

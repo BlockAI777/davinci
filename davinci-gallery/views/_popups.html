@@ -1,0 +1,145 @@
+<div id="popup-wallets" class="popup" style="display:none">
+	<x onclick="hideBuyDirectPopup()"></x>
+	<h2 id="wallet-title">Connect your wallet</h2>
+	<li><button class="wallet-pick" onclick="onWallet('metamask')"><img src="/media/metamask.png"> METAMASK</button></li>
+	<li><button class="wallet-pick" onclick="onWallet('harmony')"><img src="/media/harmony.png" > HARMONY ONE</button></li>
+	<p>We do not own your private keys and cannot access your funds without your confirmation</p>
+	<p>You need to add ONE Harmony Network on Metamask, please follow our <a href="https://davincigalleryone.gitbook.io/davinci-gallery/connect-to-a-wallet">documentation</a>, using other networks will result in permanent loss</p>
+	<p>By using DaVinci you agree to have read and accepted the <br> <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a></p>
+</div>
+
+<div id="popup-account" class="popup" style="display:none">
+	<li><a href="/profile">Profile</a></li>
+	<li><a href="/activity">Activity</a></li>
+	<li><a href="/mycreations">My Creations</a></li>
+	<li><a href="/mycollection">My Collection</a></li>
+	<li><a href="/governance">Governance</a></li>
+	<li><a href="/vinci">VINCI <span id="account-vinci">0.00</span></a></li>
+	<hr class="line">
+	<li><a noref onclick="onSignout()">Sign out <span id="account-address">one1vinci</span></a></li>
+</div>
+
+<div id="popup-govern" class="popup" style="display:none">
+	<li><a href="/myvinci">My VINCIs</a></li>
+	<li><a href="/swap" class="disabled" disabled>Swap</a></li>
+	<li><a href="/stake" class="disabled" disabled>Stake VINCI/ONE</a></li>
+	<li><a href="/claim" class="disabled" disabled>Claim Rewards</a></li>
+	<hr class="line">
+	<li><a href="/govern" class="disabled" disabled>Vote Proposals</a></li>
+</div>
+
+<div id="popup-filters" class="popup" style="display:none">
+	<li><a noref onclick="onSelectFilter('mso')">Most Sold</a></li>
+	<li><a noref onclick="onSelectFilter('mvi')">Most Viewed</a></li>
+	<li><a noref onclick="onSelectFilter('mex')">Most Expensive</a></li>
+	<li><a noref onclick="onSelectFilter('lex')">Less Expensive</a></li>
+	<li><hr class="line"></li>
+	<li><a noref onclick="onSelectFilter('fso')">For Sale Only</a></li>
+	<li><a noref onclick="onSelectFilter('nfs')">Not For Sale</a></li>
+	<li><hr class="line"></li>
+	<li><a noref onclick="onSelectFilter('sal')">Direct Sale</a></li>
+	<li><a noref onclick="onSelectFilter('auc')">Auctions</a></li>
+</div>
+
+<div id="popup-categories" class="popup" style="display:none">
+	<li><a href="/graphics">Digital Art</a></li>
+	<li><a href="/paintings">Paintings</a></li>
+	<li><a href="/photos">Photos</a></li>
+	<li><a href="/kids">Kids</a></li>
+	<li><a href="/memes">Memes</a></li>
+	<li><hr class="line"></li>
+	<li><a href="/private">Private [Adults 18+]</a></li>
+</div>
+
+<div id="popup-buydirect" class="popup" style="display:none">
+	<x onclick="hideBuyDirectPopup()"></x>
+	<h2 id="buy-title">Buy Now</h2>
+	<li><img id="buy-cover" src="#"></li>
+	<li>You are buying collectible (<span id="buy-media">image</span>)</li>
+	<li id="buy-address">0x0</li>
+	<li class="forsale">Price: <span id="buy-price">0.00</span> ONE</li>
+	<li class="royalty"><span id="buy-royalty">10</span> % in royalties go to the author</li>
+	<li><button id="buy-action" class="base" onclick="onBuyConfirm()">CONFIRM</button></li>
+	<li id="buy-status">One payment confirmation required</li>
+</div>
+
+<div id="popup-resell" class="popup" style="display:none">
+	<x onclick="hideResellPopup()"></x>
+	<h2 id="resell-title">Buy Now</h2>
+	<li><img id="resell-cover" src="#"></li>
+	<li>You are buying collectible (<span id="resell-media">image</span>)</li>
+	<li id="resell-address">0x0</li>
+	<li class="forsale">Price: <span id="resell-price">0.00</span> ONE</li>
+	<li class="royalty"><span id="resell-royalty">10</span> % in royalties go to the author</li>
+	<li><button id="resell-action" class="base" onclick="onResellConfirm()">CONFIRM</button></li>
+	<li id="resell-status">One payment confirmation required</li>
+</div>
+
+<div id="popup-placebid" class="popup popup-fields" style="display:none">
+	<x onclick="hidePlaceBidPopup()"></x>
+	<h2 id="bid-title">Place Bid</h2>
+	<li><img id="bid-cover" src="#"></li>
+	<li>You are bidding on collectible (<span id="bid-media">image</span>)</li>
+	<li id="bid-address">0x0</li>
+	<li><b>Auction ends on <span id="bid-enddate">2000/00/00 at 00:00 UTC</span></b></li>
+	<li class="forsale">Last Bid: <span id="bid-price">0.00</span> ONE</li>
+	<li class="royalty"><span id="bid-reserve">Reserve price not met</span></li>
+	<li><input type="text" id="bid-amount" placeholder="Place your bid"></li>
+	<li><button id="bid-action" class="base" onclick="onBidConfirm()">CONFIRM</button></li>
+	<li id="bid-status">One payment confirmation required</li>
+</div>
+
+<div id="popup-collection" class="popup popup-fields" style="display:none">
+	<x onclick="hideCollectionPopup()"></x>
+	<h2>New Collection</h2>
+	<div class="upload-box" id="coll-cover">
+		<li>Upload cover image in JPG or PNG for your collection</li>
+		<li><small>Maximum Size 30mb</small></li>
+		<div class="upload-cnt">
+			<div><svg viewBox="0 0 20 20" width="20px" height="20px" class=""><g fill="currentColor" fill-rule="nonzero"><path d="M16.7 12.5v3.333a.867.867 0 0 1-.867.867H4.167a.867.867 0 0 1-.867-.867V12.5a.8.8 0 1 0-1.6 0v3.333A2.467 2.467 0 0 0 4.167 18.3h11.666a2.467 2.467 0 0 0 2.467-2.467V12.5a.8.8 0 1 0-1.6 0z"></path><path d="M6.399 7.768a.8.8 0 1 0-1.131 1.131l4.166 4.167a.8.8 0 0 0 1.132 0l4.166-4.167a.8.8 0 0 0-1.131-1.131L10 11.368l-3.601-3.6z"></path><path d="M10.8 12.5v-10a.8.8 0 1 0-1.6 0v10a.8.8 0 1 0 1.6 0z"></path></g></svg></div>
+			<label id="coll-file-name"></label>
+			<input type="file" name="collcover" id="coll-file" class="input-file" onchange="onPreviewCollCover(this)">
+			<div id="coll-preview" class="hidden"><img id="coll-img" class="preview" src="#"></div>
+		</div>
+	</div>
+	<li><label>Name</label> <input type="text" id="coll-name" placeholder="e.g. Abstract Gallery" maxlength="40"></li>
+	<li><label>Description</label></li>
+	<textarea id="coll-desc" placeholder="e.g. Our best paintings in watercolor" maxlength="1000"></textarea>
+	<div id="coll-action"><button id="coll-save" class="base" onclick="onSaveCollection()">SAVE COLLECTION</button></div>
+	<div id="coll-status">One payment confirmation is required</div>
+</div>
+
+<div id="popup-import" class="popup popup-fields" style="display:none">
+	<x onclick="hideImportPopup()"></x>
+	<h2>Import Token</h2>
+	<li><label>Contract Address</label> <input type="text" id="import-contract" placeholder="e.g. 0x123456..."></li>
+	<li><label>Token Id</label> <input type="text" id="import-token" placeholder="e.g. Integer like 1, 2, or address 0x987654..."></li>
+	<li><label>Image URL</label> <input type="text" id="import-url" placeholder="e.g. https://example.com/mycooltoken.jpg" onchange="onUrlChange(this)"></li>
+	<div id="import-data">
+		<img id="import-image" src="/media/nopic.png">
+		<li><label>Author</label> <span id="import-author">Unknown</span></li>
+		<li><label>Owner</label> <span id="import-owner">Unknown</span></li>
+		<li><label>Copies</label> <span id="import-copies">1</span></li>
+	</div>
+	<div id="import-action"><button id="import-save" class="base" onclick="onImportAction()">IMPORT TOKEN</button></div>
+	<div id="import-status">One payment confirmation is required</div>
+</div>
+
+<div id="popup-sender" class="popup popup-fields" style="display:none">
+	<x onclick="hideSenderPopup()"></x>
+	<h2>Send Token</h2>
+	<li><label>Receiver Address</label> <input type="text" id="receiver" placeholder="e.g. 0x123456..."></li>
+	<div id="sender-action"><button id="send-button" class="base" onclick="onSendAction()">SEND TOKEN</button></div>
+	<div id="sender-status">One transfer confirmation is required</div>
+</div>
+
+<div id="popup-reported" class="popup popup-fields" style="display:none">
+	<x onclick="hideReportedPopup()"></x>
+	<h2>Report Token</h2>
+	<input type="hidden" id="reported-artwork">
+	<li><label>Reason</label> <input type="text" id="reported-reason" placeholder="Why this token should be reported?"></li>
+	<li><label>Original URL</label> <input type="text" id="reported-url" placeholder="Optional, url where original artwork is found"></li>
+	<li><label>Contact Info</label> <input type="text" id="reported-contact" placeholder="Email, twitter or any way we can contact the author"></li>
+	<div id="reported-action"><button id="reported-button" class="base" onclick="onReportedAction()">REPORT</button></div>
+	<div id="reported-status">Curators will take appropriate action</div>
+</div>

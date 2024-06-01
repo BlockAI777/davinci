@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+	<h1 class="title">My Creations <img class="icon-copy" src="/media/icon-copy.svg" title="Copy to clipboard" onclick="javascript:copyToClipboard(window.location.origin+'/artist/<%=user.name||config.user%>')"></h1>
+	<div id="cards">
+		<% if (cols && cols.length>0) { %>
+			<% cols.forEach(function(item){ %>
+    			<%- include('collection-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+		<% if (!list || list.length<1) { %>
+			<vbox>
+	  			<h3>You haven't created any collectible</h3>
+				<img src="/media/logobw.svg" width="200px">
+	  			<h2>Would you like to create one?</h2>
+	  			<a href="./create" id="create">CREATE!</a>
+			</vbox>
+  		<% } else { %>
+			<% list.forEach(function(item){ %>
+	    		<%- include('manage-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+	</div>
+	<% if (list && list.length>=config.limit) { %>
+		<div id="pager">
+			<button id="button-pager" class="base-small" onclick="moreMycreations()">SEE MORE</button>
+		</div>
+  	<% } %>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/explore.js"></script>
+</body>
+</html>

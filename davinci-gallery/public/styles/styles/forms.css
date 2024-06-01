@@ -1,0 +1,20 @@
+.form-fields { width: 720px; text-align: left; }
+.form-fields li { margin: 20px 0; }
+.form-fields label { font-weight: 600; }
+.form-fields label.disabled { color: #aaa; }
+.form-fields label.warn { visibility: hidden; color: #C00; font-weight: 500; font-size: 80%; }
+.form-fields label.note { margin-top: 4px; font-weight: normal; font-size: 90%; color: #666; }
+.form-fields input[type=textbox] { padding: 8px; border: 1px solid #e2e4ef; font-size: 90%; border-radius: 4px; }
+.form-fields input[type=textbox]::active { outline: 2px solid #88ccff44; }
+.form-fields input[type=textbox]::placeholder { color: #bbb; }
+.form-fields input[type=radio] { cursor: pointer; }
+.form-fields input[type=date] { padding: 6px; }
+.form-fields input.text-long { width: 400px; }
+.form-fields input.text-inline { width: 200px; margin-right: 10px; }
+.form-fields textarea { width: 600px; height: 60px; padding: 8px; font-family: avenir, sans-serif; font-size: 90%; border-radius: 4px; border: 1px solid #e2e4ef; }
+.form-fields textarea::active { outline: 2px solid #88ccff44; }
+.form-fields textarea::placeholder { color: #bbb; }
+.form-fields .option { display: inline-block; margin: 0; padding: 0 20px 0 0; }
+.form-fields .option label { display: inline-block; margin: 0; cursor: pointer; font-weight: normal; }
+.form-fields .option label.disabled { color: #aaa; }
+

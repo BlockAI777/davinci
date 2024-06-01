@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+	<h1 class="title">WELCOME</h1>
+	<button id="login" onclick="onLogin()" style="padding:6px 40px" disabled>LOGIN WITH METAMASK</button>
+	<p id="warning" style="color:#A00">Wait...</p>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+async function warn(txt){
+	$('warning').innerHTML = txt;
+}
+
+async function onLogin(){
+	if(!window.ethereum){
+		warn('Metamask not detected');
+		return;
+	}
+	if(!web3){
+		web3 = new Web3(window.ethereum);
+		//warn('Web3 not detected');
+		//return;
+	}
+	warn('Sign message with Metamask');
+    let acs = await web3.eth.requestAccounts();
+	//let acs = await web3.eth.getAccounts();
+    console.log('Acs', acs.length);
+    console.log(acs);
+	let act = acs[0].toLowerCase();
+    console.log('Act', act);
+	let tkn = randomAddress();
+	let msg = 'DAVINCI LOGIN TOKEN: '+tkn;
+	let sig = await signMessage(act, msg, false);
+	console.log('--Sig', sig);
+	// verify sig on server
+	if(sig){
+		let ok = await verifySignature(act, msg, sig);
+		if(ok){
+			console.log('--OK', ok);
+			let res = await fetch('/api/token/'+act+'/'+tkn+'/'+sig);
+			let txt = await res.text();
+			console.log('Txt', txt);
+			setCookie('token', tkn);
+			warn('Signature is valid');
+			//window.location.href = '/';
+		} else {
+			console.log('--NO', ok);
+			warn('Invalid signature');
+		}
+	} else {
+		warn('Login cancelled by user');
+	}
+}
+
+async function signMessage(act, msg, pre=true) {
+	let sig = null;
+    try {
+        //if(pre){ msg = '\x19Ethereum Signed Message:\n'+msg.length+''+msg; }
+    	//let hex = web3.utils.sha3(msg);
+        //sig = await web3.eth.sign(hex, act);
+        sig = await web3.eth.personal.sign(msg, act);
+        console.log('Sig', sig);
+    } catch(ex){
+        console.error('Error:', ex.message);
+		warn('Error: '+ex.message);
+    }
+    return sig;
+}
+
+async function verifySignature(act, msg, sig){
+    let hsh = web3.utils.sha3('\x19Ethereum Signed Message:\n'+msg.length+''+msg);
+    let rsv = {
+        messageHash: hsh,
+        r: sig.substr(0,66),
+        s: '0x'+sig.substr(66,128),
+        v: '0x'+sig.substr(130)
+    }
+    console.log('-- RSV', rsv);
+	let adr = await web3.eth.accounts.recover(rsv);
+	console.log('--Adr', adr);
+	let ok = act==adr.toString().toLowerCase();
+	return ok;
+}
+
+async function main() {
+	startDavinci();
+	$('login').disabled = false;
+	warn('Sign message with Metamask');
+}
+
+window.onload = main;
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<div class="card">
+	<div class="cover">
+		<% if (item.media=='video') { %>
+			<svg class="icon-media" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#fff" d="M336.2 64H47.8C21.4 64 0 85.4 0 111.8v288.4C0 426.6 21.4 448 47.8 448h288.4c26.4 0 47.8-21.4 47.8-47.8V111.8c0-26.4-21.4-47.8-47.8-47.8zm189.4 37.7L416 177.3v157.4l109.6 75.5c21.2 14.6 50.4-.3 50.4-25.8V127.5c0-25.4-29.1-40.4-50.4-25.8z"></path></svg>
+		<% } %>
+		<% if (item.creator == config.user) { %>
+			<a href="/edit/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'" loading="lazy"></a>
+		<% } else { %>
+			<a href="/view/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'" loading="lazy"></a>
+		<% } %>
+	</div>
+	<li class="hbox">
+		<h1><%=item.name||'Unnamed'%></h1>
+		<img class="heart" src="/media/<%=config.theme=='lite-mode'?'icon-likes.png':'icon-likes-dark.png'%>" onclick="onLike('<%=item.address%>')" data-like="<%=item.favorite%>">
+	</li>
+	<li class="hbox">
+		<h2>by <a href="/profile/<%=item.author||item.creator%>"><%=item.author||item.creator.substr(0,10)%></a> <% if (item.golden) { %><img class="golden" src="/media/golden16.png" title="Golden author"><% } %> <% if (item.verified) { %><img class="verified" src="/media/davinci_logo.svg" title="Verified author"><% } %> <% if (item.redflag) { %><img class="redflag" src="/media/redflag.svg" title="Copyright warning"><% } %></h2>
+		<div class="likes">
+			<label class="likes-count"><%=item.views%></label>
+			<img src="/media/<%=config.theme=='lite-mode'?'icon-views.png':'icon-views-dark.png'%>">
+		</div>
+	</li>
+	<li class="hbox">
+		<span><span class="price"><%=parseInt(item.saleprice)%> ONE/<span id="priceusd"><%='$'+(item.saleprice * config.oneusd.price).toFixed(2)%></span></span> <% if (item.saletype==1) { %><img src="/media/auction.png" width="12px"><% } %></span>
+		<span class="rarity"><%=item.available%>/<%=item.copies%></span>
+	</li>
+	<li class="hbox nopad btop">
+	  	<% if (item.inactive || item.redflag) { %>
+			<button class="buy" data-address="<%=item.address%>" disabled>INACTIVE</button>
+		<% } else if (item.creator == config.user && item.available > 0) { %>
+			<button class="edit" data-address="<%=item.address%>" onclick="onManage(this)">EDIT</button>
+		<% } else if (item.onsale) { %>
+  			<% if (item.available < 1) { %>
+				<button class="buy" data-address="<%=item.address%>" disabled>SOLD OUT</button>
+			<% } else { %>
+  				<% if (item.saletype==1) { %>
+  					<% if (new Date(item.enddate) < new Date()) { %>
+						<button class="buy" data-address="<%=item.address%>" disabled>AUCTION ENDED</button>
+					<% } else if (new Date(item.inidate) > new Date()) { %>
+						<button class="buy" data-address="<%=item.address%>" disabled>AUCTION SOON</button>
+					<% } else { %>
+						<button class="buy" data-address="<%=item.address%>" onclick="onBidNow(this)">PLACE BID</button>
+					<% } %>
+				<% } else { %>
+					<button class="buy" data-address="<%=item.address%>" onclick="onBuyNow(this)">BUY NOW</button>
+				<% } %>
+			<% } %>
+		<% } else { %>
+			<button class="buy" data-address="<%=item.address%>" disabled>NOT FOR SALE</button>
+		<% } %>
+	</li>
+</div>

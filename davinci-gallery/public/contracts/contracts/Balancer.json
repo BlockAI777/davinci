@@ -1,0 +1,28 @@
+{
+	"abi":[
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tkad",
+					"type": "address"
+				},
+				{
+					"internalType": "address[]",
+					"name": "adrs",
+					"type": "address[]"
+				}
+			],
+			"name": "getBalances",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		}
+	]
+}

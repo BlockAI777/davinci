@@ -1,0 +1,152 @@
+<% 
+var total = data.total || 0;
+if(total>210000000){ total = total - 210000000; }
+%>
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/index-v1.css">
+</head>
+<body class="<%= config.theme %>">
+
+<div class="topmain">
+
+	<div class="tophead">
+		<%- include('_header.html'); %>
+	</div>
+
+	<div id="slider">
+		<div id="slider-box" class="slider-transition">
+			<header id="slide1" class="slide" data-position="1">
+				<div class="wrap top">
+					<h1>A new generation<br>of art is emerging</h1>
+					<h2><a href="/explore">Collect it here</a></h2>
+				</div>
+			</header>
+			<header id="slide2" class="slide" data-position="2">
+				<div class="wrap top">
+					<div class="midtext">
+						<div class="midbox">
+							<h1>Make <b>Moment</b></h1>
+							<h1>Capture It <b>Forever</b></h1>
+							<h2>Win bespoke NFT event tickets today and be there live</h2>
+							<h3><a href="/artist/TimeTraveler0">Start My Collection</a></h3>
+						</div>
+						<div class="midbox">
+							<img class="midpic" src="/media/hero2b.png">
+						</div>
+					</div>
+				</div>
+			</header>
+			<header id="slide3" class="slide" data-position="3">
+				<div class="wrap top">
+					<div class="midtext">
+						<h1 class="midtitle">GALLERY TREASURES</h1>
+						<h3><a href="/artist/quidd">Start Exploring</a></h3>
+					</div>
+				</div>
+			</header>
+			<!-- 
+			<header id="slide4" class="slide" data-position="4">
+				<div class="wrap top">
+					<div class="midtext">		
+						<h1 class="midtitle">ANIMOCA</h1>
+						<h3><a href="/artist/animocabrands">Start Exploring</a></h3>
+					</div>
+				</div>
+			</header>
+			 -->
+		</div>
+	</div>
+
+	<div class="wrap panels">
+		<!-- <div class="panel">&nbsp;</div> -->
+		<div class="panel">
+			<h1>Artists</h1>
+			<h2><%=parseInt(data.artists || 0).toLocaleString() %></h2>
+			<h3><%=parseInt(data.users7).toLocaleString() %> <small>last week</small></h3>
+		</div>
+		<div class="panel">
+			<h1>NFTs Minted</h1>
+			<h2><%=parseInt(data.artworks || 0).toLocaleString() %></h2>
+			<h3><%=parseInt(data.items7).toLocaleString() %> <small>last week</small></h3>
+		</div>
+		<div class="panel">
+			<h1>Copies Sold</h1>
+			<h2><%=parseInt(data.sold || 0).toLocaleString() %></h2>
+			<h3><small>Avg Price</small> <%=parseInt(total/data.sold).toLocaleString() %> <small>ONE</small></h3>
+		</div>
+		<div class="panel">
+			<h1>Total Sales</h1>
+			<h2><%=parseInt(total || 0).toLocaleString() %> <small>ONE</small></h2>
+			<h3><%=parseInt(total * config.oneusd.price || 0).toLocaleString() %> <small>USD</small></h3>
+		</div>
+	</div>
+
+</div>
+
+<content>
+	<h1 class="title">Featured Artists</h1>
+	<div class="cards">
+		<div class="artist-card">
+			<div class="artist-cover">
+				<a href="/artist/JoanieLemercier"><img class="artist-avatar" src="/media/front-joanielemercier.jpg"></a>
+			</div>
+			<h1>JoanieLemercier</h1>
+			<h2>Light as a medium, space as a canvas</h2>
+			<hbox><a href="/artist/JoanieLemercier">Visit artist page</a> <a href="/artist/JoanieLemercier"><svg width="43" height="13" viewBox="0 0 43 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.07274 6.72727H38.717" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/><path d="M35 1.72727L41 6.72727" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/><path d="M35 11.5L41 6.50002" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/></svg></a></hbox>
+		</div>
+		<div class="artist-card">
+			<div class="artist-cover">
+				<a href="/artist/BrunoMarshall"><img class="artist-avatar" src="/media/front-brunomarshall.jpg"></a>
+			</div>
+			<h1>BrunoMarshall</h1>
+			<h2>Sounds of the soul</h2>
+			<hbox><a href="/artist/BrunoMarshall">Visit artist page</a> <a href="/artist/BrunoMarshall"><svg width="43" height="13" viewBox="0 0 43 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.07274 6.72727H38.717" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/><path d="M35 1.72727L41 6.72727" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/><path d="M35 11.5L41 6.50002" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/></svg></a></hbox>
+		</div>
+		<div class="artist-card">
+			<div class="artist-cover">
+				<a href="/artist/CodeWarrior"><img class="artist-avatar" src="/media/front-codewarrior.jpg"></a>
+			</div>
+			<h1>CodeWarrior</h1>
+			<h2>Dimensional art</h2>
+			<hbox><a href="/artist/CodeWarrior">Visit artist page</a> <a href="/artist/CodeWarrior"><svg width="43" height="13" viewBox="0 0 43 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.07274 6.72727H38.717" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/><path d="M35 1.72727L41 6.72727" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/><path d="M35 11.5L41 6.50002" stroke="var(--border-inverse)" stroke-width="2" stroke-linecap="square"/></svg></a></hbox>
+		</div>
+	</div>
+</content>
+
+<content>
+	<h1 class="title">Our Partners</h1>
+	<div class="center">
+	    <li><a href="https://trusteeglobal.com" target="_blank"><img class="partname" src="/media/trustee.svg" width="500px"></a></li>
+	    <li><a href="https://trusteeglobal.com" target="_blank"><img class="partlogo" src="/media/trustee.png" width="1000px"></a></li>
+		<li><a class="partapp" href="https://apps.apple.com/us/app/trustee-wallet/id1462924276" target="_blank"><img src="/media/button-appstore.png" width="200px"></a> <a href="https://play.google.com/store/apps/details?id=com.trusteewallet" target="_blank"><img src="/media/button-googleplay.png" width="200px"></a></li>
+	</div>
+</content>
+
+<content>
+	<h1 class="title">Supported Wallets</h1>
+	<hbox id="wallets">
+		<div id="onewallet">
+			<a class="wallet-link" href="https://chrome.google.com/webstore/detail/harmony-one-wallet/fnnegphlobjdpkhecapkijjdkgcjhkib" target="_blank">Get Harmony ONE Wallet</a>
+			<a class="wallet-link" href="https://www.harmony.one/buy" target="_blank">Buy ONE at Harmony.one</a>
+		</div>
+		<div id="metamask">
+			<a class="wallet-link" href="#!" onclick="enableMetamask()">Enable Harmony Network in Metamask</a>
+		</div>
+	</hbox>
+</content>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/main.js"></script>
+</body>
+</html>

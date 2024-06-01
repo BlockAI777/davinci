@@ -1,0 +1,205 @@
+<% 
+var total = data.total || 0;
+if(total>210000000){ total = total - 210000000; }
+
+function timeAgo(date) {
+	let SECOND_MILLIS = 1000;
+	let MINUTE_MILLIS =   60 * SECOND_MILLIS;
+	let HOUR_MILLIS   =   60 * MINUTE_MILLIS;
+	let DAY_MILLIS    =   24 * HOUR_MILLIS;
+	let WEEK_MILLIS   =    7 * DAY_MILLIS;
+
+	let ago  = "seconds ago";
+	let time = (new Date(date)).getTime();
+    if (time < 1000000000000) { time *= 1000;}  // if timestamp given in seconds, convert to millis
+
+    let now = new Date().getTime();
+    if (time > now || time <= 0) {
+        return "just now";
+    }
+
+    let diff = now - time;
+    if (diff < MINUTE_MILLIS) {
+        ago = "seconds ago";
+    } else if (diff < 2 * MINUTE_MILLIS) {
+        ago = "a minute ago";
+    } else if (diff < 50 * MINUTE_MILLIS) {
+        ago = diff / MINUTE_MILLIS + " minutes ago";
+    } else if (diff < 90 * MINUTE_MILLIS) {
+        ago = "one hour ago";
+    } else if (diff < 24 * HOUR_MILLIS) {
+        ago = diff / HOUR_MILLIS + " hours ago";
+    } else if (diff < 48 * HOUR_MILLIS) {
+        ago = "a day ago";
+    } else if (diff < WEEK_MILLIS) {
+        ago = diff / DAY_MILLIS + " days ago";
+    } else {
+    	ago = 'on '+date.toLocaleDateString();
+    }
+
+    return ago;
+}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/index.css">
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+</head>
+<body class="<%= config.theme %>">
+
+<div class="topmain">
+
+	<div class="tophead">
+		<%- include('_header.html'); %>
+	</div>
+
+	<div class="wrap intro">
+		<p class="intro1">daVinci is your marketplace for NFTs</p>
+		<li class="collage"><img src="/media/collage.png" width="100%"></li>
+		<p class="intro2">Mint collectibles for free, trade your creations and explore thousands of artists like you</p>
+		<p class="intro3">We are part of the Harmony ONE ecosystem of decentralized apps</p>
+	</div>
+
+	<div class="wrap panels">
+		<!-- <div class="panel">&nbsp;</div> -->
+		<div class="panel">
+			<h1>Artists</h1>
+			<h2><%=parseInt(data.artists || 0).toLocaleString() %></h2>
+			<h3><%=parseInt(data.users7).toLocaleString() %> <small>last week</small></h3>
+		</div>
+		<div class="panel">
+			<h1>NFTs Minted</h1>
+			<h2><%=parseInt(data.artworks || 0).toLocaleString() %></h2>
+			<h3><%=parseInt(data.items7).toLocaleString() %> <small>last week</small></h3>
+		</div>
+		<div class="panel">
+			<h1>Copies Sold</h1>
+			<h2><%=parseInt(data.sold || 0).toLocaleString() %></h2>
+			<h3><small>Avg Price</small> <%=parseInt(total/data.sold).toLocaleString() %> <small>ONE</small></h3>
+		</div>
+		<div class="panel">
+			<h1>Total Sales</h1>
+			<h2><%=parseInt(total || 0).toLocaleString() %> <small>ONE</small></h2>
+			<h3><%=parseInt(total * config.oneusd.price || 0).toLocaleString() %> <small>USD</small></h3>
+		</div>
+	</div>
+
+</div>
+
+<content>
+	<h1 class="title">Hot collections</h1>
+	<div id="collhotx" class="cardsx artworks nobar">
+		<% if (colshot && colshot.length>0) { %>
+			<% colshot.forEach(function(item){ %>
+    			<%- include('index-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+	</div>
+	
+	<h1 class="title">New Collections</h1>
+	<div id="collnewx" class="cardsx artworks nobar">
+		<% if (colsnew && colsnew.length>0) { %>
+			<% colsnew.forEach(function(item){ %>
+    			<%- include('index-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+	</div>
+</content>
+
+<content>
+	<h1 class="title">Top Sellers</h1>
+		<div class="cardsx artworks nobar">
+		<% if (usrshot && usrshot.length>0) { %>
+			<% usrshot.forEach(function(item){ %>
+				<div class="artist-card">
+					<div class="artist-cover">
+						<a href="/profile/<%=item.name?.toLowerCase() || 'Anonymous'%>"><img class="artist-avatar" src="/uploads/avatars/<%=item.avatar||'nopic.png'%>" onerror="this.src='/media/logobw.svg'" loading="lazy"></a>
+					</div>
+					<h1><%=item.name||'Unknown'%></h1>
+					<h2>Joined <%=timeAgo(item.created)%></h2>
+					<h3><%=item.qty%> <%=item.qty==1?'sale':'sales'%></h3>
+					<li class="btop"><button class="view" data-address="<%=item.address%>" onclick="javascript:window.location.href='/artist/<%=item.name?.toLowerCase() || 'Anonymous'%>'; return false;">COLLECTION</button></li>
+				</div>
+	  		<% }); %>
+	  	<% } %>
+	  	</div>
+</content>
+
+<content>
+	<h1 class="title">New Artists</h1>
+		<div class="cardsx artworks nobar">
+		<% if (usrsnew && usrsnew.length>0) { %>
+			<% usrsnew.forEach(function(item){ %>
+				<div class="artist-card">
+					<div class="artist-cover">
+						<a href="/profile/<%=item.name?.toLowerCase() || 'Anonymous'%>"><img class="artist-avatar" src="/uploads/avatars/<%=item.avatar||'nopic.png'%>" onerror="this.src='/media/logobw.svg'" loading="lazy"></a>
+					</div>
+					<h1><%=item.name||'Unknown'%></h1>
+					<h2>Joined <%=timeAgo(item.created)%></h2>
+					<h3>New artist</h3>
+					<!-- <h3><%=item.qty%> <%=item.qty==1?'artwork':'artworks'%></h3> -->
+					<li class="btop"><button class="view" data-address="<%=item.address%>" onclick="javascript:window.location.href='/artist/<%=item.name?.toLowerCase() || 'Anonymous'%>'; return false;">COLLECTION</button></li>
+				</div>
+	  		<% }); %>
+	  	<% } %>
+	  	</div>
+</content>
+
+<content>
+	<h1 class="title">Our Partners</h1>
+	<div class="partners">
+		<div class="partner center">
+		    <li><a href="https://trusteeglobal.com" target="_blank"><img class="partname" src="/media/trustee.svg" width="200px"></a></li>
+		    <li><a href="https://trusteeglobal.com" target="_blank"><img class="partlogo" src="/media/trustee.png" width="200px"></a></li>
+			<li>
+				<a class="partapp" href="https://apps.apple.com/us/app/trustee-wallet/id1462924276" target="_blank"><img src="/media/button-appstore.png" width="120px"></a> 
+				<a href="https://play.google.com/store/apps/details?id=com.trusteewallet" target="_blank"><img src="/media/button-googleplay.png" width="120px"></a>
+			</li>
+		</div>
+		<div class="partner center">
+		    <li><a href="https://nftcalendar.io" target="_blank"><img class="partlogo" src="/media/nftcal.jpg" width="200px"></a></li>
+		</div>
+		<div class="partner center">
+		    <li><a href="https://cryptoarcade.one" target="_blank"><img class="partlogo" src="/media/cryptoarcade.jpg" width="200px"></a></li>
+		</div>
+		<div class="partner center">
+		    <li style="background-color:#000"><a href="https://coordinape.com" target="_blank"><img class="partlogo" src="/media/coordinape.svg" width="200px"></a></li>
+		</div>
+		<div class="partner center">
+		    <li><a href="https://coingecko.com" target="_blank"><img class="partlogo" src="/media/coingecko.png" width="200px"></a></li>
+			<li>COINGECKO</li>
+		</div>
+		<div class="partner center">
+		    <li><a href="https://coinmarketcap.com" target="_blank"><img class="partlogo" src="/media/coinmarketcap.png" width="200px"></a></li>
+			<li>COINMARKETCAP</li>
+		</div>
+	</div>
+</content>
+
+<content>
+	<h1 class="title">Supported Wallets</h1>
+	<hbox id="wallets">
+		<div id="onewallet">
+			<a class="wallet-link" href="https://chrome.google.com/webstore/detail/harmony-one-wallet/fnnegphlobjdpkhecapkijjdkgcjhkib" target="_blank">Get Harmony ONE Wallet</a>
+			<a class="wallet-link" href="https://www.harmony.one/buy" target="_blank">Buy ONE at Harmony.one</a>
+		</div>
+		<div id="metamask">
+			<a class="wallet-link" href="#!" onclick="enableMetamask()">Enable Harmony Network in Metamask</a>
+		</div>
+	</hbox>
+</content>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/main.js"></script>
+</body>
+</html>

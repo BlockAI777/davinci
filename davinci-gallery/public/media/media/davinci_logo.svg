@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<style>.cls-2{fill:#4e6c85;}.cls-3{fill:#00ade8;}.cls-4{fill:#69fabc;}.cls-5{fill:url(#radial-gradient);}</style>
+<radialGradient id="radial-gradient" cx="109.31" cy="556.73" r="7.51" gradientTransform="translate(-313.5 476.32) rotate(-135)" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#00ade8"/>
+<stop offset="1" stop-color="#69fabc"/>
+</radialGradient>
+</defs>
+<g id="daVinci_logo">
+<path class="cls-2" d="M10.21,3.35,1,5.83a1,1,0,0,0-.51,1.9l5.39,5.38c.76.77,1.61.54,1.89-.51Z"/>
+<path class="cls-3" d="M2.86,5.32l6.77,6.77a1,1,0,0,0,1.9-.5l2-7.36c.28-1-.35-1.67-1.39-1.39Z"/>
+<path class="cls-4" d="M8.24,10.71l2.48-9.26C11,.41,10.37-.21,9.33.07L2,2C.93,2.32.7,3.17,1.47,3.93Z"/>
+<polygon class="cls-5" points="2.86 5.32 8.24 10.71 10.21 3.35 2.86 5.32"/>
+</g>
+</svg>

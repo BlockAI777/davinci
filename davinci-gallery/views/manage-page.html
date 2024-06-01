@@ -1,0 +1,5 @@
+<% if (list && list.length>0) { %>
+	<% list.forEach(function(item){ %>
+		<%- include('manage-item.html', {item:item}) %>
+	<% }); %>
+<% } %>

@@ -1,0 +1,49 @@
+<div class="item">
+	<div class="cover">
+		<% if (item.media=='video') { %>
+			<svg class="icon-media" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#fff" d="M336.2 64H47.8C21.4 64 0 85.4 0 111.8v288.4C0 426.6 21.4 448 47.8 448h288.4c26.4 0 47.8-21.4 47.8-47.8V111.8c0-26.4-21.4-47.8-47.8-47.8zm189.4 37.7L416 177.3v157.4l109.6 75.5c21.2 14.6 50.4-.3 50.4-25.8V127.5c0-25.4-29.1-40.4-50.4-25.8z"></path></svg>
+		<% } %>
+		<% if (item.creator == config.user) { %>
+			<a href="/edit/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'"></a>
+		<% } else { %>
+			<a href="/view/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'"></a>
+		<% } %>
+	</div>
+	<li class="vbox panel">
+		<h1><%=item.name%></h1>
+		<h2>Author <a href="/profile/<%=item.creator%>"><%=item.author||item.creator.substr(0,10)%></a></h2>
+		<h2>Owner <a href="/profile/<%=item.owner%>"><%=item.seller?item.seller.substr(0,10):'Unknown'%></a></h2>
+	</li>
+	<li class="vbox panel">
+		<span>Type <%=item.media%></span>
+		<span class="rarity">Copies <b><%=item.copies%></b></span>
+		<span class="rarity">Available <b><%=item.available%></b></span>
+	</li>
+	<li class="vbox panel">
+		<% if(item.saletype==0) { %>
+			<span>Direct Sale</span>
+			<span>No end date</span>
+			<span></span>
+		<% } else { %>
+			<span>Auction</span>
+			<span>Starts <%=item.dateini%></span>
+			<span>Ends <%=item.dateend%></span>
+		<% } %>
+	</li>
+	<li class="vbox panel nopad price">
+		<span class="price">Price <%=parseInt(item.saleprice)%> ONE</span> 
+  		<% if (item.creator == config.user) { %>
+				<button class="edit" data-address="<%=item.address%>" onclick="onManage(this)">EDIT</button>
+		<% } else { %>
+	  		<% if (item.onsale) { %>
+	  			<% if (item.available < 1) { %>
+					<button class="buy" data-address="<%=item.address%>" disabled>SOLD OUT</button>
+				<% } else { %>
+					<button class="buy" data-address="<%=item.address%>" onclick="onBuyNow(this)">BUY NOW</button>
+				<% } %>
+			<% } else { %>
+				<button class="buy" data-address="<%=item.address%>" disabled>NOT FOR SALE</button>
+			<% } %>
+		<% } %>
+	</li>
+</div>

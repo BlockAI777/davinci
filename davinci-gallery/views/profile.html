@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/profile.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<%
+function money(num=0, decs=2){
+	return parseFloat(num).toFixed(decs);
+}
+
+function dateShort(sdate){
+    if(!sdate){ return 'N/A'; }
+	return new Date(sdate).toLocaleDateString();
+}
+
+function minLapse(min=0){
+	let lapse = '0 minutes';
+	if(min>1440){ lapse = money(min/1440)+' days'; }
+	else if(min>60){ lapse = money(min/60)+' hours'; }
+	else { lapse = min+' minutes'; }
+	return lapse;
+}
+
+function secLapse(sec=0){
+	let lapse = '0 seconds';
+	if(sec>86400){ lapse = money(sec/86400)+' days'; }
+	else if(sec>3600){ lapse = money(sec/3600)+' hours'; }
+	else if(sec>60){ lapse = money(sec/60)+' minutes'; }
+	else { lapse = sec+' seconds'; }
+	return lapse;
+}
+%>
+<main>
+	<h1 class="title">Profile <img class="icon-copy" src="/media/icon-copy.svg" title="Copy to clipboard" onclick="javascript:copyToClipboard(window.location.origin+'/profile/<%=item.name%>')"></h1>
+	<div class="profile-box">
+		<div class="profile-info">
+			<div class="profile-avatar">
+				<img id="profile-image" class="profile-image" src="/uploads/avatars/<%=item.avatar%>" onerror="this.src='/media/nopic.png'">
+				<input type="file" name="avatarfile" id="avatar-file" class="input-file" onchange="onPreviewFile(this)">
+			</div>
+	  		<li>Click to upload avatar<br>Best size 400x400 as JPG or PNG</li>
+	  	</div>
+		<div class="profile-data">
+	  		<li><label>User Name:</label> <input type="text" id="name" value="<%=item.name%>" maxlength="20" data-edit="<%=item.edit%>"></li>
+	  		<li><label>Tagline:</label> <input type="text" id="tagline" value="<%=item.tagline%>" maxlength="100" data-edit="<%=item.edit%>"></li>
+	  		<li><label>Description:</label> <input type="text" id="desc" value="<%=item.description%>" data-edit="<%=item.edit%>" maxlength="1000"></li>
+	  		<li><label>Member since:</label> <span class="local-time" data-time="<%=new Date(item.created).getTime()%>"><%=item.created%></span></li>
+	  		<li class="blank"></li>
+	  		<li><label>Social accounts</label></li>
+	  		<li><label>• URL:</label> <input type="text" id="url" value="<%=item.url%>" data-edit="<%=item.edit%>" maxlength="100"></li>
+	  		<li><label>• Twitter:</label> <input type="text" id="twitter" value="<%=item.twitter%>" data-edit="<%=item.edit%>" maxlength="100" placeholder="@handler"></li>
+	  		<li><label>• Instagram:</label> <input type="text" id="instagram" value="<%=item.instagram%>" data-edit="<%=item.edit%>" maxlength="100" placeholder="@handler"></li>
+	  		<li class="blank"></li>
+	  		<li><b>Minting</b></li>
+	  		<li>• Total NFTs minted <%=item.mintqty||0%></li>
+	  		<li>• Collections created <%=item.collect||0%></li>
+	  		<li>• Total minting cost <%=money(item.mintcst)%> USD ($0.001 per NFT)</li>
+	  		<li>• Total minting time <%=secLapse(item.mintsec)%> (2 secs per NFT)</li>
+	  		<li class="blank"></li>
+	  		<li><b>Comparison to other platforms</b></li>
+	  		<li>• Money saved <%=item.mintsav%> USD (~$70 per NFT in ETH)</li>
+			<li>• Time saved <%=minLapse(item.minttim)%> (~15 mins tx in ETH)</li>
+	  		<li>• CO2 saved <%=item.mintcok%> Kgs (~48kg CO2 per NFT in ETH)</li>
+	  		<li class="blank"></li>
+	  		<li><b>Earnings</b></li>
+	  		<li>• Sold <%=item.earnqty%> NFTs for <%=money(item.earntot)%> ONE </li>
+	  		<li>• Average price <%=money(item.earnavg)%> ONE per NFT</li>
+	  		<li>• Last NFT sold for <%=money(item.earnlst)%> ONE on <%=dateShort(item.earndat)%></li>
+	  		<li class="blank"></li>
+	  		<li><b>Spendings</b></li>
+	  		<li>• Bought <%=item.expnqty%> NFTs for <%=money(item.expntot)%> ONE </li>
+	  		<li>• Average price <%=money(item.expnavg)%> ONE per NFT</li>
+	  		<li>• Last NFT bought for <%=money(item.expnlst)%> ONE on <%=dateShort(item.expndat)%></li>
+	  		<li class="blank"></li>
+  		</div>
+
+		<!-- <div id="profile-grant-box"><button id="profile-grant" onclick="onApproval()">Approve Sales</button><br><span id="grant-text">Click if you want Davinci to sell tokens on your behalf</span></div> -->
+		<div><button id="profile-save" data-edit="<%=item.edit%>" onclick="onSave()">SAVE PROFILE</button></div>
+		<div id="statusbar" class="statusbar">Upload an image and edit your profile</div>
+
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/profile.js"></script>
+<script>
+session.user = <%- JSON.stringify(item)||{}%>;
+</script>
+</body>
+</html>

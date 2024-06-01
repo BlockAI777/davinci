@@ -1,0 +1,25 @@
+main { padding-bottom: 0; }
+main h1.title { margin-top: 0; }
+.title { margin-top: 0; }
+.artist-name { margin-top: 40px; }
+
+.wrap { margin: 0; padding: 0; }
+.wrap:first-child { margin-top: 0; }
+.wrap:last-child  { margin-bottom: 0; }
+.avatar-box { width: 150px; height: 150px; margin: 0 auto; }
+#avatar { width: 150px; height: 150px; border-radius: 75px; }
+#artist-bio { max-width: 600px; margin: 0 auto; }
+
+.artist-card   { display: inline-block; width: 200px; margin: 10px 10px 50px; height: fit-content; background-color: var(--back-primary); border: 1px solid var(--border-primary); border-radius: 6px; box-shadow: 0 0 8px -4px #00000044; }
+.artist-cover  { position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 200px; height: 200px; }
+.artist-avatar { width: 200px; }
+.artist-card h1 { margin: 8px 0 0 0; padding: 0 10px; font-size: 100%; font-weight: bold; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; text-align: left; }
+.artist-card h2 { margin: 0; padding: 0 10px; font-size: 80%; font-weight: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+.artist-card h3 { margin: 5px 0 20px; padding: 0 10px; font-size: 90%; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+
+.artist-card .view           { width: 100%; padding: 8px; font-size: 80%; font-weight: normal; color: var(--color-primary); background-color: transparent; border: none; border-radius: 0 0 6px 6px; cursor: pointer; }
+.artist-card .view:hover     { background-color: var(--button-accent); color: var(--color-primary); }
+.artist-card .view:disabled  { background-color: var(--button-disabled); color: var(--color-disabled); cursor: default; }
+
+.gallery { margin: 0; padding: 10px 0 100px; }
+.artwork { width: 300px; margin: 20px; filter: grayscale(100%); opacity: 50%; border: 20px solid #000; }

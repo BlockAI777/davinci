@@ -1,0 +1,17 @@
+<div class="card">
+	<div class="cover">
+		<a href="/explore/collection/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'" loading="lazy"></a>
+	</div>
+	<li class="hbox">
+		<h1><%=item.name || item.address.substr(0,10)%></h1>
+	</li>
+	<li class="hbox">
+		<h2><%=item.description || 'Collection'%></h2>
+	</li>
+	<li class="hbox">
+		<span class="price"><%=item.count%> <%=item.count==1 ? 'artwork':'artworks'%></span>
+	</li>
+	<li class="hbox nopad">
+		<button class="buy" data-address="<%=item.address%>" onclick="javascript:window.location.href='/explore/collection/<%=item.address%>'; return false;">COLLECTION</button>
+	</li>
+</div>

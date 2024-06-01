@@ -1,0 +1,22 @@
+	<div id="brand">
+		<div id="davinci">
+			<a href="/"><img id="logosvg" src="/media/<%=config.theme=='lite-mode'?'davinci_black.svg':'davinci.svg'%>" width="200px" height="42px"></a>
+		</div>
+		<!-- <div id="motto">Collectibles Marketplace</div> -->
+	</div>
+	<div id="tools">
+		<div id="links">
+			<li><a href="/artists">Artists</a></li>
+			<li><a href="/galleries">Galleries</a></li>
+			<li><a href="/create">Create</a></li>
+			<li><a href="/explore">Explore</a></li>
+			<li><a href="/market">Market</a></li>
+			<li><a href="/faq" target="_blank">FAQ</a></li>
+			<li>
+				<a noref id="menu-account" onclick="onAccount()">Connect</a>
+				<% if(config.badge>0) { %>
+				  <span id="badge" onclick="showActivity()"><%=config.badge%></span>
+				<% } %>
+			</li>
+		</div>
+ 	</div>

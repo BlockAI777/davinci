@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<div id="filters">
+	<a href="/explore">All</a> 
+	<a href="/explore/image">Images</a> 
+	<a href="/explore/music">Music</a> 
+	<a href="/explore/video">Videos</a> 
+	<a href="/explore/book">Books</a> 
+	<a noref id="menu-filters" onclick="onFilter(event)">+ Filters</a> 
+</div>
+<%
+var parent = null;
+function intOrDec(amount, decs=2) {
+	if(parseInt(amount)==amount) { return parseInt(amount); }
+	return parseFloat(amount).toFixed(decs);
+}
+%>
+<main class="explore">
+	<h1 class="title">Collection</h1>
+	
+	<div>
+		<div><img class="imgcol rounded" src="/uploads/thumbs/<%=coll.thumbnail||'nopic.png'%>"</div>
+		<h2 class="colname"><%=coll.name%></h2>
+		<p class="coldesc"><%=coll.description%></p>
+		<p class="collink small"><a href="<%=config.explorer%>/address/<%=coll.address%>" target="_blank"><%=coll.address%></a></p>
+	</div>
+
+	<div id="cards" class="cards">
+		<% if (!list || list.length<1) { %>
+			<div class="no-list">
+	  			<h3>No sell orders available</h3>
+			</div>
+  		<% } else { %>
+			<% list.forEach(function(item){  %>
+	    		<%- include('market-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+	</div>
+	<!--div class="pager">
+		<% 
+		pag = parseInt(config.page) || 1;
+		lst = parseInt(config.last) || 1;
+		prv = (pag-1 > 1   ? pag-1 : 1);
+		nxt = (pag+1 < lst ? pag+1 : lst);
+		%>
+		<a href="/marketnew?page=1">First</a>
+		<a href="/marketnew?page=<%=prv%>">Prev</a>
+		<% if (lst<10) { %>
+			<a href="/marketnew?page=1" class="<%=lst<1?'disabled':''%>">1</a>
+			<a href="/marketnew?page=2" class="<%=lst<2?'disabled':''%>">2</a>
+			<a href="/marketnew?page=3" class="<%=lst<3?'disabled':''%>">3</a>
+			<a href="/marketnew?page=4" class="<%=lst<4?'disabled':''%>">4</a>
+			<a href="/marketnew?page=5" class="<%=lst<5?'disabled':''%>">5</a>
+			<a href="/marketnew?page=6" class="<%=lst<6?'disabled':''%>">6</a>
+			<a href="/marketnew?page=7" class="<%=lst<7?'disabled':''%>">7</a>
+			<a href="/marketnew?page=8" class="<%=lst<8?'disabled':''%>">8</a>
+			<a href="/marketnew?page=9" class="<%=lst<9?'disabled':''%>">9</a>
+  		<% } else { %>
+			<a href="/marketnew?page=<%=pag+0%>" class="<%=lst<pag+0?'disabled':''%>"><%=pag+0%></a>
+			<a href="/marketnew?page=<%=pag+1%>" class="<%=lst<pag+1?'disabled':''%>"><%=pag+1%></a>
+			<a href="/marketnew?page=<%=pag+2%>" class="<%=lst<pag+2?'disabled':''%>"><%=pag+2%></a>
+			<a href="/marketnew?page=<%=pag+3%>" class="<%=lst<pag+3?'disabled':''%>"><%=pag+3%></a>
+			<a href="/marketnew?page=<%=pag+4%>" class="<%=lst<pag+4?'disabled':''%>"><%=pag+4%></a>
+			<a href="/marketnew?page=<%=pag+5%>" class="<%=lst<pag+5?'disabled':''%>"><%=pag+5%></a>
+			<a href="/marketnew?page=<%=pag+6%>" class="<%=lst<pag+6?'disabled':''%>"><%=pag+6%></a>
+			<a href="/marketnew?page=<%=pag+7%>" class="<%=lst<pag+7?'disabled':''%>"><%=pag+7%></a>
+			<a href="/marketnew?page=<%=pag+8%>" class="<%=lst<pag+8?'disabled':''%>"><%=pag+8%></a>
+  		<% } %>
+		<a href="/marketnew?page=<%=nxt%>">Next</a>
+		<a href="/marketnew?page=<%=lst%>">Last</a>
+	</div-->
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/Market3.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/market.js"></script>
+</body>
+</html>

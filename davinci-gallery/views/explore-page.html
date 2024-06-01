@@ -1,0 +1,5 @@
+<% if (list && list.length>0) { %>
+	<% list.forEach(function(item){ %>
+		<%- include('explore-item.html', {item:item}) %>
+	<% }); %>
+<% } %>

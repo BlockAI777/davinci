@@ -1,0 +1,45 @@
+main.explore { }
+main h1.title { margin-top: 0; }
+
+.hbox  { display: flex; justify-content: space-between; align-items: center; padding: 3px 10px; }
+.nopad { padding: 0; }
+.btop  { border-top: 1px solid var(--border-primary); }
+
+.cards { display: flex; flex-flow: wrap; justify-content: center; margin: 0 40px; }
+#cards { display: flex; flex-flow: wrap; justify-content: center; margin: 0 40px; }
+#no-cards { margin: 0 auto; text-align: center; }
+
+.card  { display: inline-block; width: 250px; margin: 10px 10px 50px; height: fit-content; background-color: var(--back-primary); border: 1px solid var(--border-primary); border-radius: 6px; box-shadow: 0 0 8px -4px #00000044; }
+.card .cover { position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 250px; height: 250px; border-radius: 6px 6px 0 0; }
+.card .nft { width: 250px; }
+
+.card h1 { margin: 0; padding: 0; font-size: 100%; font-weight: bold; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.card h2 { margin: 0; padding: 0; font-size: 80%; font-weight: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+.card h3 { margin: 0; padding: 0; font-size: 90%; font-weight: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+
+.card .action { width: 100%; margin: 0; padding: 0; /*border-top: 1px solid #ccc;*/ }
+.card .price  { font-size: 80%; font-weight: bold; }
+.card .likes  { display: flex; align-items: center; text-align: right; font-size: 80%; }
+.card .likes-count  { margin-right: 5px; }
+.card .likes img { width: 18px; height: 18px; margin: 0; }
+.card .heart  { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+.card .heart[data-like=true] { content:url('/media/icon-liked.png'); }
+.card .rarity { text-align: right; font-size: 80%; }
+
+.card .buy           { width: 100%; padding: 8px 6px; font-size: 80%; font-weight: normal; color: var(--color-primary); background-color: transparent; border: none; border-radius: 0 0 6px 6px; cursor: pointer; }
+.card .buy:hover     { background-color: var(--button-accent); color: var(--color-primary); }
+.card .buy:disabled  { background-color: var(--button-disabled); color: var(--color-disabled); cursor: default; }
+
+.card .edit          { width: 100%; padding: 8px 6px; font-size: 80%; font-weight: normal; color: var(--color-primary); background-color: transparent; border: none; border-radius: 0 0 6px 6px; cursor: pointer; }
+.card .edit:hover    { background-color: var(--button-accent); color: var(--color-primary); }
+.card .edit:disabled { background-color: var(--button-disabled); color: var(--color-disabled); cursor: default; }
+
+.card .icon-media { position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; }
+
+#create { display: inline-block; width: 200px; margin-top: 40px; padding: 15px 30px; background-color: #00ade8; color: #fff; border-radius: 4px; border: none; letter-spacing: 1.5px; font-size: 100%; font-weight: bold; text-decoration: none; outline: none; cursor: pointer; }
+#create:visited { color: #fff; }
+
+.colname { }
+.coldesc { margin: 0 20%; }
+.collink {  }
+

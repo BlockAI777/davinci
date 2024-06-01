@@ -1,0 +1,119 @@
+<%
+function timeAgo(date) {
+	let SECOND_MILLIS = 1000;
+	let MINUTE_MILLIS =   60 * SECOND_MILLIS;
+	let HOUR_MILLIS   =   60 * MINUTE_MILLIS;
+	let DAY_MILLIS    =   24 * HOUR_MILLIS;
+	let WEEK_MILLIS   =    7 * DAY_MILLIS;
+	let MONTH_MILLIS  =   30 * DAY_MILLIS;
+	let YEAR_MILLIS   =  365 * DAY_MILLIS;
+
+	let ago  = "seconds ago";
+	let time = (new Date(date)).getTime();
+    if (time < 1000000000000) { time *= 1000;}  // if timestamp given in seconds, convert to millis
+
+    let now = new Date().getTime();
+    if (time > now || time <= 0) {
+        return "just now";
+    }
+
+    let diff = now - time;
+    if (diff < MINUTE_MILLIS) {
+        ago = "seconds ago";
+    } else if (diff < 2 * MINUTE_MILLIS) {
+        ago = "a minute ago";
+    } else if (diff < 50 * MINUTE_MILLIS) {
+        ago = diff / MINUTE_MILLIS + " minutes ago";
+    } else if (diff < 90 * MINUTE_MILLIS) {
+        ago = "one hour ago";
+    } else if (diff < 24 * HOUR_MILLIS) {
+        ago = diff / HOUR_MILLIS + " hours ago";
+    } else if (diff < 48 * HOUR_MILLIS) {
+        ago = "a day ago";
+    } else if (diff < MONTH_MILLIS) {
+        ago = diff / DAY_MILLIS + " days ago";
+    } else if (diff < YEAR_MILLIS) {
+        ago = parseInt(diff / MONTH_MILLIS) + " months ago";
+    } else {
+    	if(date){
+    		ago = 'on '+date.toLocaleDateString();
+    	} else {
+    		ago = 'some day';
+    	}
+    }
+
+    return ago;
+}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/artists.css">
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+	<div class="wrap">
+		<!-- 
+		<div class="avatar-box"><img id="avatar" src="/uploads/avatars/joanie.jpg"></div>
+		<h1 class="artist-name">JOANIE</h1>
+		<h2>Light as a medium, Space as a canvas</h2>
+		<div id="artist-bio">Joanie Lemercier is a French artist primarily focused on projections of light in space and its influence on our perception. Lemercier was introduced to creating art on a computer at age five by attending classes on pattern design for fabrics taught by his mother. The threads of his early education grounded his interest in physical structures: geometry, patterns, and minimalist forms. As Lemercier’s work evolved, he began to play with these concrete structures through the physics and philosophy of how light can be used to manipulate perceived reality.</div>
+
+		<h1>Collection</h1>
+		<div class="cards">
+			<% if (!list || list.length<1) { %>
+	  			<h3>This artist has no collections yet</h3>
+	  		<% } else { %>
+				<% list.forEach(function(item){ %>
+		    		<%- include('explore-item.html', {item:item}) %>
+		  		<% }); %>
+	  		<% } %>
+		</div>
+		-->
+
+		<hr class="spacer-100">
+		
+		<h1>Golden Artists</h1>
+		<p>
+			Stake your <a href="/vinci">VINCI</a> to get listed as Golden Artist<br>
+			Golden Badge for wallet balance greater than 1000 VINCI<br>
+			VINCI balance will be checked every Sunday at 00:00 UTC<br>
+		</p>
+		<div class="cards">
+			<% gold.forEach(function(item){ %>
+				<div class="artist-card">
+					<div class="artist-cover">
+						<a href="/profile/<%=item.name.toLowerCase()%>"><img class="artist-avatar" src="/uploads/avatars/<%=item.avatar||'nopic.png'%>" onerror="this.src='/media/logobw.svg'" loading="lazy"></a>
+					</div>
+					<h1><%=item.name||'Unknown'%></h1>
+					<h2>Joined <%=timeAgo(item.created)%></h2>
+					<h3><%=item.qty%> <%=item.qty==1?'artwork':'artworks'%></h3>
+					<li class="btop"><button class="view" data-address="<%=item.address%>" onclick="javascript:window.location.href='/artist/<%=item.name.toLowerCase()%>'; return false;">VIEW COLLECTION</button></li>
+				</div>
+	  		<% }); %>
+	  	</div>
+
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+async function main() { startDavinci(); }
+window.onload = main
+</script>
+</body>
+</html>

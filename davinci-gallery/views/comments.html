@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/lists.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<%
+function format(date) {
+	return date.toLocaleString();
+}
+function timeAgo(date) {
+	let time = new Date(date).getTime();
+    const SECOND = 1000;
+    const MINUTE =   60 * SECOND;
+    const HOUR   =   60 * MINUTE;
+    const DAY    =   24 * HOUR;
+    const WEEK   =    7 * DAY;
+
+    // 03h 15m
+    // if timestamp given in seconds, convert to millis
+    if (time < 1000000000000) { time *= 1000; }
+
+    var now  = (new Date()).getTime();
+    var diff = now - time;
+    if (time > now || time <= 0) { return "never"; }
+
+    if (diff < MINUTE) {
+        return "just now";
+    } else if (diff < 2 * MINUTE) {
+        return "a minute ago";
+    } else if (diff < 50 * MINUTE) {
+        return parseInt(diff / MINUTE) + " minutes ago";
+    } else if (diff < 90 * MINUTE) {
+        return "an hour ago";
+    } else if (diff < 24 * HOUR) {
+        return parseInt(diff / HOUR) + " hours ago";
+    } else if (diff < 48 * HOUR) {
+        return "yesterday";
+    } else if (diff < WEEK) {
+        return parseInt(diff / DAY) + " days ago";
+    }
+
+    let text = (new Date(time)).toISOString().substr(0,10);
+    return text;
+}
+%>
+<style>
+	.title { text-align: center; }
+	.list { border-bottom: 1px solid #333; border-collapse: collapse; }
+	.list th { border-top: 1px solid #333; border-bottom: 1px solid #333; }
+	del { color: #c66; }
+</style>
+<main class="comments">
+	<h1 class="title">Latest Comments</h1>
+	<div class="list alternate">
+		<% if (!list || list.length<1) { %>
+		<div class="no-list">
+  			<h3>No Comments</h3>
+		</div>
+  		<% } else { %>
+  			<table>
+  				<tr><th>Time</th><th>Artwork</th><th>User</th><th>Comment</th><th>&nbsp;</th></tr>
+				<% list.forEach(function(item){ %>
+				<tr>
+					<td><%=timeAgo(item.created)%></td>
+					<td><a href="/view/<%=item.artwork%>"><%=item.artwork.substr(0,10)%></a></td>
+					<td><a href="/profile/<%=item.userid%>"><%=item.userid.substr(0,10)%></a></td>
+					<td><% if (item.status==2) { %><del><%=item.comment%></del><% } else { %><%=item.comment%><% } %></td>
+					<td>
+						<% if (item.status<2) { %>
+							<button class="plain" onclick="delComment(<%=item.comid%>)">REMOVE</button>
+						<% } else { %>
+							<button class="plain" onclick="undoComment(this, <%=item.comid%>)">RESTORE</button>
+						<% } %>
+					</td>
+				</tr>
+	  			<% }); %>
+  			</table>
+  		<% } %>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+	startDavinci();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/lists.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<div id="filters">
+	<a href="/explore">All</a> 
+	<a href="/explore/image">Images</a> 
+	<a href="/explore/music">Music</a> 
+	<a href="/explore/video">Videos</a> 
+	<a href="/explore/book">Books</a> 
+	<a noref id="menu-filters" onclick="onFilter(event)">+ Filters</a> 
+</div>
+<main class="explore">
+	<h1 class="title">Open Market</h1>
+	<div class="list">
+		<% if (!list || list.length<1) { %>
+		<div class="no-list">
+  			<h3>No collectibles</h3>
+  			<h2>Be the first to create one!</h2>
+			<li><img src="/media/logobw.svg" width="200px"></li>
+  			<a href="/create" id="create">Create!</a>
+		</div>
+  		<% } else { %>
+			<% list.forEach(function(item){ %>
+	    		<%- include('trade-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/contracts/Market3.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/explore.js"></script>
+</body>
+</html>

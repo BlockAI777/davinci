@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/lists.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main class="reported">
+	<h1 class="title">Reported Artworks</h1>
+	<div class="list">
+		<% if (!list || list.length<1) { %>
+		<div class="no-list">
+  			<h3>No Artworks Reported</h3>
+		</div>
+  		<% } else { %>
+			<% list.forEach(function(item){ %>
+				<div class="item hbox">
+					<a href="/view/<%=item.artwork%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>"></a>
+					<div class="vbox">
+						<h1><%=item.name||'Unnamed'%></h1>
+						<li><label>Author:  </label> <a href="/profile/<%=item.creator%>" target="_blank"><%=item.author||(item.creator?item.creator.substr(0,10):'Unknown')%></a></li>
+						<li><label>Reason:  </label> <span><%=item.reason%></span></li>
+						<li><label>Original:</label> <a href="<%=item.url%>" target="_blank"><%=item.url%></a></li>
+						<li><label>Contact: </label> <span><%=item.contact%></span></li>
+						<li><label>Reported:</label> <span><%=item.created%></span></li>
+					</div>
+				</div>
+	  		<% }); %>
+  		<% } %>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+async function main() {
+	startDavinci();
+}
+window.onload = main;
+</script>
+</body>
+</html>

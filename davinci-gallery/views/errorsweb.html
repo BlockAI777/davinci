@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<style>
+		table { width: 100%; font-size: 0.8em; }
+		table tr:nth-child(odd){ background-color: var(--back-alternate); }
+		table tr:last-child td { border-bottom: 3px double var(--border-primary); }
+		table th { text-align: left; border-top: 3px double var(--border-primary); border-bottom: 3px double var(--border-primary); background-color: var(--back-secondary); }
+		table td { text-align: left; }
+		table td:nth-child(1) { min-width: 80px; text-align: left; }
+		.hide { display: none;  }
+		.show { display: block; }
+	</style>
+</head>
+<body class="dark-mode">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<%
+function format(date) {
+	if(typeof(date)=='string'){ date = new Date(date); }
+	return (date.getMonth()+1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0') + ' '+date.getHours().toString().padStart(2,'0') + ':' + date.getMinutes().toString().padStart(2,'0');
+}
+function dateFormat(date) {
+	if(typeof(date)=='string'){ date = new Date(date); }
+	return date.toLocaleString();
+}
+%>
+<main>
+	<h1 class="title">CLIENT ERRORS</h1>
+	<div class="wrap">
+		<% if (!list || list.length<1) { %>
+			<h3>There are no errors, good job!</h3>
+  		<% } else { n=0; %>
+	  		<table id="list-errors">
+	  			<tr>
+	  				<!-- <th>Id</th> -->
+	  				<th>Date</th>
+	  				<th>Call</th>
+	  				<th>Method</th>
+	  				<th>Name</th>
+	  				<th>Message</th>
+	  				<th>Line</th>
+	  				<th>Column</th>
+	  				<th>Stack</th>
+	  			</tr>
+				<% list.forEach(function(item){ n++; %>
+					<tr>
+						<!-- <td><%=item.errid%></td> -->
+						<td><%=format(item.created)%></td>
+						<td><%=item.call%></td>
+						<td><%=item.method%></td>
+						<td><%=item.name%></td>
+						<td><%=item.message%></td>
+						<td><%=item.line%></td>
+						<td><%=item.column%></td>
+						<td><a href="javascript:toggleStack('<%=item.errid%>')">Stack</a><pre id="error-<%=item.errid%>" class="<%= n==1?'show':'hide'%>"><%=item.stack%></pre></td>
+					</tr>
+		  		<% }); %>
+	  		</table>
+  		<% } %>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script>
+function toggleStack(errid) {
+	console.log('Toggle', errid)
+	$('error-'+errid).classList.toggle('hide');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/proposal.css">
+	<style>
+		label.inline { display: inline; }
+	</style>
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+<%
+function getDate(d) {
+	return new Date(d).toLocaleString();
+}
+function toNumber(n) {
+	return n.toLocaleString();
+}
+var quorum = 0;
+%>
+	<h1 class="title">Gallery Reservation</h1>
+	<div class="form-box">
+		<div class="form-data">
+	  		<li><label class="inline">Gallery:</label> 
+				<input type="radio" name="hall" id="davinci"   value="davinci" checked> <label class="inline" for="davinci">Da Vinci</label>
+				<input type="radio" name="hall" id="rembrandt" value="rembrandt"> <label class="inline" for="rembrandt">Rembrandt</label>
+				<input type="radio" name="hall" id="vangogh"   value="vangogh"> <label class="inline" for="vangogh">Van Gogh</label>
+	  		</li>
+	  		<li><label>Artist name or address</label> <input type="text" id="artist" value="<%=item.artist%>" maxlength="100"></li>
+	  		<!-- <li class="blank"></li> -->
+			<li id="ini-box">
+				<label>Exhibition Starts</label> 
+				<input type="date" id="inidate" class="textbox" data-time="<%=new Date(item.inidate).getTime()%>" value="<%=item.inidate.toJSON().substr(0,10)%>">
+			</li>
+			<li id="end-box">
+				<label>Exhibition Ends</label> 
+				<input type="date" id="enddate" class="textbox" data-time="<%=new Date(item.enddate).getTime()%>" value="<%=item.enddate.toJSON().substr(0,10)%>">
+			</li>
+	  		<li><label>Payment in VINCI</label> <input type="text" id="payment" value="<%=item.payment%>"></li>
+		</div>
+		<div><button id="form-save" class="base" onclick="onReserve()">RESERVE</button></div>
+		<div id="statusbar" class="statusbar">All info is required</div>
+		<div align="left">
+			<h4>Reservation prices per day</h4>
+			<li>• DaVinci Gallery 100 VINCI per day</li>
+			<li>• Rembrandt Gallery 50 VINCI per day</li>
+			<li>• VanGogh Gallery 10 VINCI per day</li>
+		</div>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+let item = <%- JSON.stringify(item)||{}%>;
+
+function setStatus(text, warn=false) {
+	console.log(text);
+	if(warn){ text = '<warn>'+text+'</warn>'; }
+	$('statusbar').innerHTML = text;
+}
+
+function submitButton(enabled=true, title) {
+	$('form-save').disabled  = !enabled;
+	$('form-save').innerHTML = title||'WAIT';
+}
+
+
+async function onReserve() {
+	setStatus('Verifying data...'); 
+	let data = {
+		hall    : document.querySelector('input[name="hall"]:checked').value,
+		artist  : $('artist').value,
+		inidate : $('inidate').value,
+		enddate : $('enddate').value,
+		payment : $('payment').value
+	}
+	let today = new Date().toJSON().substr(0,10);
+
+	//console.log($('enddate').value, endday, today);
+	if(!data.artist){
+		setStatus('Artist name or address is required', true); 
+		return;
+	}
+	if(data.inidate<today){
+		setStatus('Starting date must be later than today', true); 
+		return;
+	}
+	if(data.enddate<today){
+		setStatus('Ending date must be later than today', true); 
+		return;
+	}
+	if(data.enddate<data.inidate){
+		setStatus('Ending date must be later than starting date', true); 
+		return;
+	}
+
+	let chk = false;
+	let inf = null;
+	if(data.artist.startsWith('0x') && data.artist.length==42){
+		chk = await fetch('/api/user/'+data.artist);
+		inf = await chk.json();
+		console.log('Res', inf);
+		if(!inf || inf.error){
+			setStatus('Artist not found', true); 
+			return;
+		}
+	} else {
+		chk = await fetch('/api/checkuser/'+data.artist.toLowerCase());
+		inf = await chk.json();
+		console.log('Res', inf);
+		if(!inf || inf.error || inf.status=='OK'){
+			setStatus('Artist not found', true);
+			return;
+		}
+		data.artist = inf.user.toLowerCase();
+	}
+
+	setStatus('Saving reservation, please wait...');
+	submitButton(false);
+
+	console.log('Data', data);
+	let url = '/reserve';
+	let hdr = {'content-type': 'application/json'};
+  	let opt = { method: 'post', headers: hdr, body: JSON.stringify(data) };
+	let res = await fetch(url, opt);
+	let jsn = await res.json();
+	console.log('Res', jsn);
+	if(jsn.error) { setStatus(jsn.error, true); submitButton(); return; }
+	setStatus('Your reservation was saved');
+	submitButton(false, 'SUCCESS');
+}
+
+async function main() {
+	await startDavinci();
+}
+
+window.onload = main;
+
+</script>
+</body>
+</html>

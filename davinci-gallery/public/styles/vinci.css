@@ -1,0 +1,66 @@
+.vinci-box { width: 600px; margin: 0 auto; padding: 40px 80px; text-align: left; border: 1px solid var(--border-primary); }
+.vinci-box h1    { padding: 10px 0; text-align: center; font-weight: normal; color: #fff; border-radius: 10px; border: 1px solid var(--border-secondary); background-color: var(--back-alternate); background: linear-gradient(90deg, #028bc4, #02ca9a); }
+.vinci-box h2    { margin-top: 40px; }
+.vinci-box label { display: inline-block; width: 200px; }
+.vinci-box span.value { display: inline-block; width: 140px; text-align: right; font-weight: bold; }
+.vinci-box input { width: 120px; text-align: right; border: 1px solid var(--border-secondary); color: var(--color-input); background-color: var(--back-alternate); }
+.vinci-box button { width: 120px; margin: 1px 0; padding: 2px 0; background-color: #00ade8; color: var(--color-light); border-radius: 4px; border: none; letter-spacing: 1.5px; font-size: 90%; outline: none; cursor: pointer; text-transform: uppercase; }
+.vinci-box button.ask { background-color: #a00; }
+.vinci-box button.bid { background-color: #080; }
+.vinci-box button:disabled { background-color: #aaaaaa; color: #333; cursor: default; }
+.vinci-box button.disabled { background-color: #aaaaaa; color: #333; cursor: default; }
+.symbol { display: inline-block; width: 50px; }
+
+.button { display: inline-block; width: 120px; margin: 1px 0; padding: 2px 0; background-color: #00ade8; color: #eee; border-radius: 4px; border: none; letter-spacing: 1.5px; font-size: 90%; text-align: center; text-transform: uppercase; outline: none; cursor: pointer; }
+.button:visited { color: #eee; }
+.button:hover { color: #fff; }
+.button:visited:hover { color: #fff; }
+.button:disabled { background-color: #aaaaaa; color: #333; cursor: default; }
+.button.disabled { background-color: #aaaaaa; color: #333; cursor: default; }
+.button.disabled:visited { background-color: #aaaaaa; color: #333; cursor: default; }
+
+.orderbook { display: flex; flex-direction: row; justify-content: center; align-items: center; }
+.order-box { width: 100%; }
+.order-box table { width: 90%; margin-bottom: 20px; border: 1px solid var(--border-secondary); border-collapse: collapse; }
+.order-box table th { padding: 4px 8px; border: 1px solid var(--border-secondary); text-align: right; }
+.order-box table td { padding: 4px 8px; border: 1px solid var(--border-secondary); text-align: right; }
+.order-box label { display: inline-block; width: 140px; }
+.order-box button { width: 125px; }
+#order-status { margin-top: 20px; text-align: center; background-color: var(--back-alternate); border: 1px solid var(--border-primary); border-radius: 4px; }
+
+.orders-list {  }
+.orders-list caption { background-color: var(--back-secondary); border: 1px solid var(--border-primary); }
+#bids-list td:first-child { color: green; }
+#asks-list td:first-child { color: red; }
+
+#trades { margin-top: 20px; }
+.trades-tabs { justify-content: center; }
+.trades-tab  { font-weight: normal; color: var(--color-secondary); }
+.trades-tab:first-child { margin-right: 30px; }
+.trades-tab:hover { color: var(--color-primary); cursor: pointer; }
+.trades-tab.selected  { font-weight: bold; color: var(--color-primary); }
+.trades-list { width: 100%; }
+.trades-list thead th { font-weight: normal; color: var(--color-secondary); border-top: 1px solid var(--border-primary); border-bottom: 1px solid var(--border-primary); }
+.trades-list th:nth-child(3) { text-align: right; }
+.trades-list th:nth-child(4) { text-align: right; }
+.trades-list th:nth-child(5) { text-align: right; }
+.trades-list th:nth-child(6) { text-align: right; }
+.trades-list td:nth-child(3) { text-align: right; }
+.trades-list td:nth-child(4) { text-align: right; }
+.trades-list td:nth-child(5) { text-align: right; }
+.trades-list td:nth-child(6) { text-align: right; }
+.hidden { display: none; }
+
+#unlock { margin-top: 1em; }
+
+#list-unlock { width: 100%; margin: 1em 0; }
+#list-unlock th:nth-child(4) { text-align: right; }
+#list-unlock td:nth-child(4) { text-align: right; }
+#list-unlock tr.unlock { color: #44e; }
+#list-unlock tr.locked { color: var(--color-primary); }
+#list-unlock tr.paid   { color: #aaa; text-decoration: line-through; }
+
+hr.spacer { border: none; margin: 0.8em 0; }
+
+.go-up { color: #080; }
+.go-dn { color: #a00; }

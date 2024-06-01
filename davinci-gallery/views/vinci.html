@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/vinci.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<%
+function money(amount, decs=2) {
+	return parseFloat(amount).toFixed(decs);
+}
+function format(date) {
+	if(!date){ return ''; }
+	return (new Date(date)).toLocaleDateString();
+}
+function state(date, status) {
+	let now = new Date();
+	if (status>2) { return 'Paid'; }
+	if (status<3 && new Date(date) < now) { return 'Unlock'; }
+	return 'Locked';
+}
+%>
+<main>
+	<!-- <h1 class="title">VINCI TOKEN</h1> -->
+	<div class="vinci-box">
+		<h1>VINCI/USD <span id="vinciusd" class="bold go-no">$0.00</span> </h1>
+		<div class="hbox"> <div>&nbsp;</div> <div class="hbox"><a href="#!" onclick="addVinciToMetamask()">Add VINCI to Metamask</a> <img src="media/metamask.png" width="24px" onclick="addVinciToMetamask()"></div></div>
+
+		<h2>Balance</h2>
+		<li><label>Your VINCI Balance:  </label><span id="balance" class="value">0.00</span> <span class="symbol">VINCI</span> <span id="ubalance" class="value">0.00</span> <span class="symbol">USD</span></li>
+		<li><label>Your Locked Rewards: </label><span id="locked"  class="value">0.00</span> <span class="symbol">VNL  </span> <span id="ulocked"  class="value">0.00</span> <span class="symbol">USD</span></li>
+ 		<!-- <li><a class="button" href="/exchange">TRADE</a></li> -->
+
+		<h2>Supply</h2>
+		<li><label>VINCI in circulation: </label><span id="minted" class="value">0.00</span> VINCI <small onclick="toggleTimer()">(Minted every second)</small></li>
+		<li><label>VINCI total supply:   </label><span id="supply" class="value">0.00</span> VINCI</li>
+		<hr class="spacer">
+		<li><label>VINCI current market cap: </label><span id="mktcap1" class="value">0.00</span> USD</li>
+		<li><label>VINCI total market cap:   </label><span id="mktcap2" class="value">0.00</span> USD</li>
+
+		<h2>Stake VINCI</h2>
+		<p>
+			Stake your <a href="/vinci">VINCI</a> to get listed as Golden Artist and earn rewards<br>
+			Golden Badge and staking rewards for wallet balance greater than 1000 VINCI<br>
+			VINCI balance and staking rewards will be calculated every Sunday at 00:00 UTC<br>
+		</p>
+		<li><label>Your staking balance: </label><span id="stakebal" class="value">0.00</span> <button id="stakebut" onclick="onStake()">STAKE</button> <b>~60% APR</b></li>
+		<li><label>Your rewards balance: </label><span id="stakewin" class="value">0.00</span> <!--button disabled>CLAIM</button--></li>
+		<li><label>Your staking share: </label><span id="shares" class="value">0.00</span> %</li>
+		<br>
+		<li><small>Staking shares and rewards for wallet balance greater than 1000 VINCIs</small></li>
+		<li><small>Just register once to be elegible for golden badge and staking rewards</small></li>
+
+		<h2>External Pools</h2>
+		<li><label>SeeSwap  </label><span id="pool-see"   class="value">0.0000</span> <a class="button" href="https://seeswap.one/swap" target="_blank">BUY</a> <a class="button" href="https://seeswap.one/pools" target="_blank">POOL</a></li>
+		<li><label>Viper    </label><span id="pool-viper" class="value">N/A</span> <a class="button" href="https://viper.exchange/#/swap?inputCurrency=ONE&outputCurrency=0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">BUY</a> <a class="button" href="https://viper.exchange/swap#/add/ONE/0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">POOL</a></li>
+		<li><label>SushiSwap</label><span id="pool-sushi" class="value">N/A</span> <a class="button" href="https://app.sushi.com/swap?inputCurrency=ETH&outputCurrency=0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">BUY</a> <a class="button" href="https://app.sushi.com/add/ETH/0xB8E0497018c991E86311b64EFd9D57b06aEDbBAE" target="_blank">POOL</a></li>
+		<li><label>MochiSwap</label><span id="pool-mochi" class="value">N/A</span> <a class="button" href="https://one.mochiswap.io/#/swap?inputCurrency=ONE&outputCurrency=0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">BUY</a> <a class="button" href="https://one.mochiswap.io/#/add/ONE/0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">POOL</a></li>
+		<li><label>LootSwap </label><span id="pool-loot"  class="value">N/A</span> <a class="button" href="https://legacy.lootswap.finance/#/swap?inputCurrency=ONE&outputCurrency=0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">BUY</a> <a class="button" href="https://legacy.lootswap.finance/#/add/ONE/0xb8e0497018c991e86311b64efd9d57b06aedbbae" target="_blank">POOL</a></li>
+		<li><label>OpenSwap </label><span id="pool-open"  class="value">N/A</span> <a class="button" href="https://openswap.one/#/" target="_blank">BUY</a> <a class="button" href="https://openswap.one/#/Pools" target="_blank">POOL</a></li>
+		<li><label>CoinGecko</label><span id="pool-gecko" class="value">N/A</span> <a class="button" href="https://www.coingecko.com/en/coins/davinci-token" target="_blank">PRICE</a></li>
+		
+		<h2>Unlock your VINCI!</h2>
+		<li>Here is a list of VNL that you can unlock as VINCI</li>
+		<% total = 0; %>
+		<% now = new Date(); %>
+		<% if (!list || list.length<1) { %>
+			<div class="no-list">
+	  			<h3>No VINCIs available</h3>
+			</div>
+  		<% } else { %>
+			<table id="list-unlock">
+				<tr><th>Date</th><th>Unlock</th><th>Status</th><th>Amount</th></tr>
+				<% list.forEach(function(item){  %>
+					<tr class="<%=item.status>2?'paid':(new Date(item.unlock)<now?'unlock':'locked')%>"><td><%=format(item.created)%></td><td><%=format(item.unlock)%></td><td><%=state(item.unlock, item.status)%></td><td><%=money(item.total)%></td></tr>
+		  		<% if (item.status<3 && new Date(item.unlock)<now) { total += parseFloat(item.total); } %>
+		  		<% }); %>
+			</table>
+		<% } %>
+		<li>You can unlock <%=money(total)%> VINCI</li>
+		<li><button id="unlock" class="<%=total>0?'':'disabled'%>" onclick="onUnlock()">UNLOCK</button></li>
+		<li id="message"></li>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script>
+let oneusd = <%- JSON.stringify(config.oneusd)||{price:0} %>;
+let unlock = <%- config.unlock||0 %>;
+if(unlock==0){ document.getElementById('unlock').classList.add('disabled'); }
+</script>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/BPOOL.js"></script>
+<script src="/contracts/Sculptor.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/vinci.js"></script>
+</body>
+</html>

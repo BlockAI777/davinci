@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/vinci.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+	<!-- <h1 class="title">VINCI TOKEN</h1> -->
+	<div class="vinci-box">
+		<h1>VINCI/USD <span id="vinciusd" class="bold go-no">$0.00</span> </h1>
+		<div class="hbox"> <div>&nbsp;</div> <div class="hbox"><a href="#!" onclick="addVinciToMetamask()">Add VINCI to Metamask</a> <img src="media/metamask.png" width="24px" onclick="addVinciToMetamask()"></div></div>
+
+		<h2>Trade VINCI/ONE <span id="vincione" class="go-up"></span></h2>
+		<!-- <small>You need to stake VINCI in order to create buy or sell offers. Use the staking panel below</small> -->
+		<div class="orders">
+			<div class="orderbook">
+				<div class="order-box">
+					<table id="bids-list" class="orders-list">
+						<caption>BUY</caption>
+						<thead>
+							<tr><th>Price</th><th>Amount</th><th>Total</th></tr>
+						</thead>
+						<tbody>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+						</tbody>
+					</table>
+					<li><label>VINCI/ONE Price </label> <input type="text" id="bid-price"   onkeyup="calcBidOnes()"></li>
+					<li><label>Buy VINCI Amount</label> <input type="text" id="bid-amount1" onkeyup="calcBidOnes()"></li>
+					<li><label>Sell ONE Amount </label> <input type="text" id="bid-amount2" onkeyup="calcBidVincis()"></li>
+					<li><label>&nbsp;</label> <button id="button-bid" class="bid" onclick="onBuyOrder()">BUY</button></li>
+				</div>
+				<div class="order-box">
+					<table id="asks-list" class="orders-list">
+						<caption>SELL</caption>
+						<thead>
+							<tr><th>Price</th><th>Amount</th><th>Total</th></tr>
+						</thead>
+						<tbody>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td></tr>
+						</tbody>
+					</table>
+					<li><label>VINCI/ONE Price </label> <input type="text"  id="ask-price"   onkeyup="calcAskOnes()"></li>
+					<li><label>Sell VINCI Amount</label> <input type="text" id="ask-amount1" onkeyup="calcAskOnes()"></li>
+					<li><label>Buy ONE Amount   </label> <input type="text" id="ask-amount2" onkeyup="calcAskVincis()"></li>
+					<li><label>&nbsp;</label> <button id="button-ask" class="ask" onclick="onSellOrder()">SELL</button></li>
+				</div>
+			</div>
+			<div id="order-status">To buy or sell VINCI, one wallet confirmation is required</div>
+			<div id="trades">
+				<div class="trades-tabs hbox">
+					<div id="trades-tab0" class="trades-tab selected" onclick="onTradeTab(0)">Open Orders</div>
+					<div id="trades-tab1" class="trades-tab" onclick="onTradeTab(1)">Trade History</div>
+				</div>
+				<div class="trades-panels">
+					<div id="trades-panel0" class="trades-panel">
+						<table id="trades-open" class="trades-list">
+							<thead>
+								<tr><th>Time</th><th>Type</th><th>Price</th><th>Amount</th><th>Total</th><th>Action</th></tr>
+							</thead>
+							<tbody>
+								<tr><td colspan="6">No open orders</td></tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="trades-panel1" class="trades-panel hidden">
+						<table id="trades-hist" class="trades-list">
+							<thead>
+								<tr><th>Time</th><th>Type</th><th>Amount</th><th>Price</th><th>Total</th><th>Status</th></tr>
+							</thead>
+							<tbody>
+								<tr><td colspan="6">No trade history</td></tr>
+							</tbody>
+						</table>						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script>
+let oneusd = <%- JSON.stringify(config.oneusd)||{price:0} %>;
+</script>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/BPOOL.js"></script>
+<script src="/contracts/Sculptor.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/exchange.js"></script>
+</body>
+</html>

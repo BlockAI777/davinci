@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<div id="filters" style="display:flex; justify-content: space-between; flex-direction: row;">
+	<div>
+		<a href="/explore">All</a> 
+		<a href="/explore/image">Images</a> 
+		<a href="/explore/music">Music</a> 
+		<a href="/explore/video">Videos</a> 
+		<a href="/explore/book">Books</a> 
+		<a noref id="menu-categories" onclick="onCategory(event)">+ Categories</a> 
+		<a noref id="menu-filters" onclick="onFilter(event)">+ Filters</a> 
+	</div>
+	<div><a href="/explore#verified">Verified</a> • <a href="/latest">Unverified</a></div>
+</div>
+<main class="explore">
+	<% if (topg && topg.length>0) { %>
+		<h1 class="title">From Our Golden Artists <img src="/media/golden32.png"></h1>
+		<div id="cardg" class="cards">
+			<% topg.forEach(function(item){ %>
+	    		<%- include('explore-item.html', {item:item}) %>
+	  		<% }); %>
+		</div>
+	<% } %>
+	<% if (topv && topv.length>0) { %>
+		<h1 class="title" id="verified">From Our Verified Artists <img src="/media/verified32.png"></h1>
+		<div id="cardv" class="cards">
+			<% topv.forEach(function(item){ %>
+	    		<%- include('explore-item.html', {item:item}) %>
+	  		<% }); %>
+		</div>
+	<% } %>
+	<% if (list && list.length>0) { %>
+		<h1 class="title" id="latest"><%=title||'Latest Artworks'%></h1>
+		<div id="cards" class="cards">
+			<% list.forEach(function(item){ %>
+	    		<%- include('explore-item.html', {item:item}) %>
+	  		<% }); %>
+	<% } else { %>
+<!--
+		<div id="no-cards">
+  			<h3>No collectibles</h3>
+  			<h2>Be the first to create one!</h2>
+			<li><img src="/media/logobw.svg" width="200px"></li>
+  			<a href="/create" id="create">Create!</a>
+		</div>
+-->
+	<% } %>
+	</div>
+	<% if (config.tools) { %>
+	  	<div>
+	  		<button class="text-only" onclick="showPrivate()">PRIVATE [18+]</button>
+			<% if(config.isAdmin) { %>
+	  			<button class="text-only" onclick="showInactive()">SEE INACTIVE</button>
+  			<% } %>
+	  	</div>
+	<% } %>
+	<% if (list && list.length>=100) { %>
+		<div id="pager">
+			<button id="button-pager" class="base-small" onclick="loadMore()">SEE MORE</button>
+		</div>
+  	<% } %>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/Market3.js"></script>
+<script src="/contracts/Auctions.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/explore.js"></script>
+</body>
+</html>

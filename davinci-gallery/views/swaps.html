@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<style>
+		table { width: 1000px; margin:0 auto; font-size: 0.8em; }
+		table tr:nth-child(odd){ background-color: var(--back-alternate); }
+		table tr:last-child td { border-bottom: 3px double var(--border-primary); }
+		table th { text-align: left; border-top: 3px double var(--border-primary); border-bottom: 3px double var(--border-primary); background-color: var(--back-secondary); cursor: pointer; }
+		table td { text-align: left; }
+		table th:nth-child(1) { min-width: 80px; text-align: left; }
+		table th:nth-child(2) { text-align: left; }
+		table th:nth-child(3) { text-align: right; }
+		table th:nth-child(4) { text-align: right; }
+		table th:nth-child(5) { text-align: right; }
+		table th:nth-child(6) { text-align: right; }
+		table th:nth-child(7) { text-align: right; }
+		table th:nth-child(8) { text-align: right; }
+		table td:nth-child(1) { min-width: 80px; text-align: left; }
+		table td:nth-child(2) { text-align: left; font-family: monospace; font-size: 1.4em; }
+		table td:nth-child(3) { text-align: right; }
+		table td:nth-child(4) { text-align: right; }
+		table td:nth-child(5) { text-align: right; }
+		table td:nth-child(6) { text-align: right; }
+		table td:nth-child(7) { text-align: right; }
+		table td:nth-child(8) { text-align: right; }
+	</style>
+</head>
+<body class="dark-mode">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<%
+function format(time) {
+	let date = new Date(time);
+	return date.toJSON().substr(5,11).replace('T',' ');
+}
+function formatX(date) {
+	if(typeof(date)=='string'){ date = new Date(date); }
+	return (date.getMonth()+1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0') + ' '+date.getHours().toString().padStart(2,'0') + ':' + date.getMinutes().toString().padStart(2,'0');
+}
+function dateFormat(date) {
+	if(typeof(date)=='string'){ date = new Date(date); }
+	return date.toLocaleString();
+}
+function numFormat(num) {
+	return parseFloat(num).toLocaleString();
+}
+function money(txt, dec=2, comma=true) {
+	var val = parseFloat(txt);
+	if(comma){
+		num = val.toLocaleString("en", {minimumFractionDigits: dec, maximumFractionDigits: dec});
+	} else {
+		num = val.toFixed(dec);
+	}
+	return num;
+}
+%>
+<main>
+	<h1 class="title">VINCI/ONE SWAPS</h1>
+	<div class="wrap">
+		<% if (!lsto || lsto.length<1) { %>
+			<h3>There are no swaps</h3>
+  		<% } else { 
+  			var n=0;
+			var totq = 0;
+			var totv = 0;
+			var toto = 0;
+			var totu = 0;
+		%>
+	  		<table class="list-swaps">
+	  			<thead>
+		  			<tr>
+		  				<th onclick="sortTable(event,0,0)">Date</th>
+		  				<th onclick="sortTable(event,1,0)">Address</th>
+		  				<th onclick="sortTable(event,2,2)">VINCI</th>
+		  				<th onclick="sortTable(event,3,2)">ONE</th>
+		  				<th onclick="sortTable(event,4,2)">USD</th>
+		  				<th onclick="sortTable(event,5,2)">VINCI/ONE</th>
+		  				<th onclick="sortTable(event,6,2)">VINCI/USD</th>
+		  				<th onclick="sortTable(event,7,2)">ONE/USD</th>
+		  			</tr>
+	  			</thead>
+	  			<tbody>
+				<% 
+					lsto.forEach(function(item){
+					   let amv = parseInt(item.amount0In);
+					   let amo = parseInt(item.amount1Out);
+					   let amu = parseInt(item.amountUSD);
+				       let prv = amo/amv;
+				       let pro = amu/amv;
+				       let pru = amu/amo;
+				       totq += 1;
+				       totv += amv;
+				       toto += amo;
+				       totu += amu;
+				 %>
+					<tr>
+						<td><%=format(item.timestamp*1000)%></td>
+						<td><a href="https://explorer.harmony.one/address/<%=item.from%>" target="_blank"><%=item.from%></a></td>
+						<td><%=money(amv,0)%></td>
+						<td><%=money(amo,0)%></td>
+						<td><%=money(amu,0)%></td>
+						<td><%=money(prv,4)%></td>
+						<td><%=money(pro,4)%></td>
+						<td><%=money(pru,4)%></td>
+					</tr>
+		  		<% }); %>
+	  			</tbody>
+	  			<tfoot>
+	  				<td>&nbsp;</td>
+	  				<td><%=money(totq,0)%> swaps out</td>
+	  				<td><%=money(totv,0)%></td>
+	  				<td><%=money(toto,0)%></td>
+	  				<td><%=money(totu,0)%></td>
+	  				<td>&nbsp;</td>
+	  				<td>&nbsp;</td>
+	  				<td>&nbsp;</td>
+	  			</tfoot>
+	  		</table>
+  		<% } %>
+	</div>
+
+	<h1 class="title">ONE/VINCI SWAPS</h1>
+	<div class="wrap">
+		<% if (!lsti || lsti.length<1) { %>
+			<h3>There are no swaps</h3>
+  		<% } else { 
+  			var n=0;
+			var totq = 0;
+			var totv = 0;
+			var toto = 0;
+			var totu = 0;
+		%>
+	  		<table class="list-swaps">
+	  			<thead>
+		  			<tr>
+		  				<th onclick="sortTable(event,0,0)">Date</th>
+		  				<th onclick="sortTable(event,1,0)">Address</th>
+		  				<th onclick="sortTable(event,2,2)">VINCI</th>
+		  				<th onclick="sortTable(event,3,2)">ONE</th>
+		  				<th onclick="sortTable(event,4,2)">USD</th>
+		  				<th onclick="sortTable(event,5,2)">VINCI/ONE</th>
+		  				<th onclick="sortTable(event,6,2)">VINCI/USD</th>
+		  				<th onclick="sortTable(event,7,2)">ONE/USD</th>
+		  			</tr>
+	  			</thead>
+	  			<tbody>
+				<% 
+					lsti.forEach(function(item){
+					   let amv = parseInt(item.amount0Out);
+					   let amo = parseInt(item.amount1In);
+					   let amu = parseInt(item.amountUSD);
+				       let prv = amo/amv;
+				       let pro = amu/amv;
+				       let pru = amu/amo;
+				       totq += 1;
+				       totv += amv;
+				       toto += amo;
+				       totu += amu;
+				 %>
+					<tr>
+						<td><%=format(item.timestamp*1000)%></td>
+						<td><a href="https://explorer.harmony.one/address/<%=item.from%>" target="_blank"><%=item.from%></a></td>
+						<td><%=money(amv,0)%></td>
+						<td><%=money(amo,0)%></td>
+						<td><%=money(amu,0)%></td>
+						<td><%=money(prv,4)%></td>
+						<td><%=money(pro,4)%></td>
+						<td><%=money(pru,4)%></td>
+					</tr>
+		  		<% }); %>
+	  			</tbody>
+	  			<tfoot>
+	  				<td>&nbsp;</td>
+	  				<td><%=money(totq,0)%> swaps in</td>
+	  				<td><%=money(totv,0)%></td>
+	  				<td><%=money(toto,0)%></td>
+	  				<td><%=money(totu,0)%></td>
+	  				<td>&nbsp;</td>
+	  				<td>&nbsp;</td>
+	  				<td>&nbsp;</td>
+	  			</tfoot>
+	  		</table>
+  		<% } %>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script>
+function stripCommas(value) {
+	let mil = Intl.NumberFormat(navigator.language).format(1000).substr(1,1);
+	if(mil==','){ return value.replace(/\,/g,''); }
+	if(mil=='.'){ return value.replace(/\./g,''); }
+	return value;
+}
+
+function sortTable(event, col, type) {
+	// Clear table
+	// Check sort order then reverse
+	// Sort lsto by col
+	// Load recs sorted
+}
+
+function sortTableOLD(event, col, type) {
+	// Ordering types are 0.str 1.int 2.dbl 3.date
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    //table = $("all-coins");
+    // Table must be defined as table.thead.tr.th where target is th
+    table = event.target.parentNode.parentNode.parentNode;
+    switching = true;
+    dir = "asc";  // Set the sorting direction to ascending:
+    
+    /* Make a loop that will continue until no switching has been done: */
+  	while (switching) {
+    	// Start by saying: no switching is done:
+    	switching = false;
+    	rows = table.tBodies[0].getElementsByTagName("TR");
+    	// Loop through all table rows in the TBODY section:
+    	for (i = 0; i < (rows.length - 1); i++) {
+			shouldSwitch = false;
+			
+			// Get the two elements you want to compare, one from current row and one from the next:
+			x = rows[i].getElementsByTagName("TD")[col];
+			y = rows[i + 1].getElementsByTagName("TD")[col];
+			
+			// Check if the two rows should switch place, based on the direction, asc or desc:
+			// I prefer strings to start ASC but numbers DESC
+			if (dir == "asc") {
+				if(type==0){ if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) { shouldSwitch = true; break; } }
+				if(type==1){ if (parseInt(stripCommas(x.innerHTML))   < parseInt(stripCommas(y.innerHTML)))   { shouldSwitch = true; break; } }
+				if(type==2){ if (parseFloat(stripCommas(x.innerHTML)) < parseFloat(stripCommas(y.innerHTML))) { shouldSwitch = true; break; } }
+				//if(type==3){ if (Date(x.innerHTML) > Date(y.innerHTML)) { shouldSwitch= true; break; } }
+			} else if (dir == "desc") {
+				if(type==0){ if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) { shouldSwitch = true; break; } }
+				if(type==1){ if (parseInt(stripCommas(x.innerHTML))   > parseInt(stripCommas(y.innerHTML)))   { shouldSwitch = true; break; } }
+				if(type==2){ if (parseFloat(stripCommas(x.innerHTML)) > parseFloat(stripCommas(y.innerHTML))) { shouldSwitch = true; break; } }
+				//if(type==3){ if (Date(x.innerHTML) < Date(y.innerHTML)) { shouldSwitch= true; break; } }
+			}
+	    }
+
+	    if (shouldSwitch) {
+	      	// If a switch has been marked, make the switch and mark that a switch has been done:
+	      	rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+	      	switching = true;
+	      	// Each time a switch is done, increase this count by 1:
+	      	switchcount ++; 
+	    } else {
+	      	// If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.
+	      	if (switchcount == 0 && dir == "asc") {
+	        	dir = "desc";
+	        	switching = true;
+	      	}
+	    }
+  	}
+}
+</script>
+<script>
+let lsto = <%- JSON.stringify(lsto)||[]%>;
+let lsti = <%- JSON.stringify(lsti)||[]%>;
+</script>
+</body>
+</html>

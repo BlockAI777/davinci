@@ -1,0 +1,19 @@
+#proposals { max-width: 720px; margin: 0 auto; padding: 20px; text-align: left; color: var(--color-primary); }
+#proposals a { color: var(--color-primary); }
+#proposals h4 { margin: 40px 0 0; font-weight: normal; }
+#proposals h2 { margin: 0 0 40px; }
+#proposals h2 .count { display: inline-block; margin-top: -10px; padding: 1px 5px; font-size: 50%; color: #fff; background-color: #d00; border-radius: 10px; }
+
+#prop-top  { padding: 20px; border: 1px solid var(--border-primary); }
+#prop-top a { display: inline-block; padding-right: 10px; }
+#prop-list { }
+.prop-item { display: block; padding: 10px 20px; border: 1px solid var(--border-primary); border-top: none; }
+.prop-item li { margin: 5px 0; }
+.prop-item li:first-child { margin-bottom:10px; }
+.prop-item h5 { display: inline-block; width: 60px; margin: 0 10px 0 0; padding: 2px 10px; font-weight: normal; font-size:80%; text-align: center; color:#FFF; background-color: var(--back-secondary); border-radius: 10px; }
+.prop-item h5.active   { background-color: #21b66f; }
+.prop-item h5.draft    { background-color: #336699; }
+.prop-item h5.closed   { background-color: #6f42c1; }
+.prop-item h5.rejected { background-color: #880000; }
+.prop-item h3 { display: inline-block; margin: 0; font-weight: bold; }
+#prop-action { margin: 40px 0; text-align: center; }

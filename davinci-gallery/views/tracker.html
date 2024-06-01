@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/lists.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main class="reported">
+<%
+function format(date) {
+	if(typeof(date)=='string'){ date = new Date(date); }
+	return date.toLocaleString();
+}
+%>
+	<h1 class="title">Artwork Tracker</h1>
+	<div class="list">
+		<% if (!item) { %>
+		<div class="no-list">
+  			<h3>No Artwork Tracked</h3>
+		</div>
+  		<% } else { %>
+			<div class="item hbox">
+				<a href="/view/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>"></a>
+				<div class="vbox">
+					<h1><label>&nbsp;     </label> <%=item.name||'Unnamed'%></h1>
+					<li><label>Collection:</label> <a class="pre" href="/explore/collection/<%=item.collection%>" target="_blank"><%=item.collection%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=item.collection%>')"></li>
+					<li><label>Token Id:  </label> <a class="pre" href="/view/<%=item.tokenid%>" target="_blank"><%=item.tokenid%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=item.tokenid%>')"></li>
+					<li><label>Author:    </label> <a class="pre" href="/profile/<%=item.creator%>" target="_blank"><%=item.creator%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=item.creator%>')"></li>
+					<li><label>Sale Type: </label> <span><%=item.saletype==0?'Direct Sale':(item.saletype==1?'Auction':'Not for sale')%></span></li>
+					<li><label>Price:     </label> <span><%=parseInt(item.saleprice)%></span></li>
+					<li><label>Created:   </label> <span><%=item.created%></span></li>
+				</div>
+			</div>
+  		<% } %>
+	</div>
+
+	<!-- Owners -->
+	<div class="list">
+		<% if (!owners || owners.length<1) { %>
+			<table class="table-list">
+				<caption>No Owners</caption>
+			</table>
+  		<% } else { %>
+			<table class="table-list">
+				<caption>Owners</caption>
+				<tr><th>Date</th><th>Name</th><th>Owner</th><th>Copies</th><th>&nbsp;</th><th>&nbsp;</th></tr>
+				<% owners.forEach(function(owner){ %>
+					<tr>
+						<td><%=format(owner.created)%></td>
+						<td><a class="pre" href="/profile/<%=owner.ownerid%>" target="_blank"><%=owner.name||'Anonymous'%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=owner.ownerid%>')"></td>
+						<td><a class="pre" href="/profile/<%=owner.ownerid%>" target="_blank"><%=owner.ownerid%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=owner.ownerid%>')"></td>
+						<td><%=owner.available%></td>
+						<td><a href="javascript:void(0)" onclick="resellBalance(this.parentNode, '<%=owner.address%>', '<%=owner.ownerid%>')">Balance</a></td>
+						<td><a href="javascript:void(0)" onclick="removeOwner(this.parentNode, '<%=owner.address%>', '<%=owner.ownerid%>')">X</a></td>
+					</tr>
+		  		<% }); %>
+			</table>
+  		<% } %>
+  		<div class="admin-action">
+  			<label>Owner address:</label> 
+  			<input type="text" id="owner-id">
+  			<button class="base-small" onclick="tokenBalance($('owner-balance'), '<%=item.tokentype%>', '<%=item.collection%>', '<%=item.address%>', $('owner-id').value.toLowerCase())">CHECK</button>
+  			<label id="owner-balance">Balance</label>
+  		</div>
+  		<div class="admin-action">
+  			<label>New Owner:</label> 
+  			<input type="text" id="buyer-id">
+  			<button class="base-small" onclick="newOwner()">Create</button>
+  			<label id="owner-msg"></label>
+  		</div>
+  		<div class="admin-action">
+  			<label>Last Owner:</label> 
+  			<input type="text" id="last-id">
+  			<button class="base-small" onclick="getLastOwner('<%=item.collection%>','<%=item.tokenid%>')">Check</button>
+  			<label id="last-msg"></label>
+  		</div>
+	</div>
+
+	<!-- Orders -->
+	<div class="list">
+		<% if (!orders || orders.length<1) { %>
+			<table class="table-list">
+				<caption>No Orders</caption>
+			</table>
+  		<% } else { %>
+			<table class="table-list">
+				<caption>Orders</caption>
+				<tr><th>Date</th><th>Type</th><th>Order</th><th>Seller</th><th>Copies</th><th>Price</th><th>Status</th><th>Original</th></tr>
+				<% orders.forEach(function(order){ %>
+					<tr>
+						<td><%=format(order.created)%></td>
+						<td><%=['Direct Sale','Auction','NFS'][order.ordertype]%></td>
+						<td><a class="pre" href="/order/<%=order.address%>" target="_blank"><%=order.address.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=order.address%>')"></td>
+						<td><a class="pre" href="/profile/<%=order.seller%>" target="_blank"><%=order.seller.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=order.seller%>')"></td>
+						<td><%=order.amount%></td>
+						<td><%=order.sellprice%></td>
+						<td><%=['Draft','Open','Closed','Cancelled'][order.status]%> <% if(order.status==1) { %><a href="javascript:void(0)" onclick="closeOrder(this.parentNode, <%=order.orderid%>)">X</a><% } %></td>
+						<td><%=order.original?'Original':'Resale'%></td>
+					</tr>
+		  		<% }); %>
+			</table>
+  		<% } %>
+	</div>
+
+	<!-- Bids -->
+	<div class="list">
+		<% if (!bids || bids.length<1) { %>
+			<table class="table-list">
+				<caption>No Bids</caption>
+			</table>
+  		<% } else { %>
+			<table class="table-list">
+				<caption>Bids</caption>
+				<tr><th>Date</th><th>Order</th><th>Bidder</th><th>Price</th><th>Status</th></tr>
+				<% bids.forEach(function(bid){ %>
+					<tr>
+						<td><%=format(bid.created)%></td>
+						<td><span class="pre"><%=bid.orderid.substr(0,10)%></span> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=bid.orderid%>')"></td>
+						<td><a class="pre" href="/profile/<%=bid.bidder%>" target="_blank"><%=bid.bidder.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=bid.bidder%>')"></td>
+						<td><%=bid.price%></td>
+						<td><%=bid.status%></td>
+						<td>&nbsp</td>
+					</tr>
+		  		<% }); %>
+			</table>
+  		<% } %>
+	</div>
+
+	<!-- Transfers -->
+	<div class="list">
+		<% if (!xfers || xfers.length<1) { %>
+			<table class="table-list">
+				<caption>No Transfers</caption>
+			</table>
+  		<% } else { %>
+			<table class="table-list">
+				<caption>Transfers</caption>
+				<tr><th>Date</th><th>Order</th><th>Sender</th><th>Receiver</th><th>Tx Hash</th><th>Contract</th></tr>
+				<% xfers.forEach(function(xfer){ %>
+					<tr>
+						<td><%=format(xfer.created)%></td>
+						<td><span class="pre"><%=xfer.orderid?xfer.orderid.substr(0,10):'Null'%></span></td>
+						<td><a class="pre" href="/profile/<%=xfer.sender%>" target="_blank"><%=xfer.sender.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=xfer.sender%>')"></td>
+						<td><a class="pre" href="/profile/<%=xfer.receiver%>" target="_blank"><%=xfer.receiver.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=xfer.receiver%>')"></td>
+						<td><a class="pre" href="<%=config.explorer%>/#/tx/<%=xfer.txhash%>" target="_blank"><%=xfer.txhash.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=xfer.txhash%>')"></td>
+						<td><a href="javascript:void(0)" onclick="tokenBalance(this.parentNode, '<%=xfer.tokentype%>', '<%=xfer.collection%>', '<%=xfer.tokenid%>', '<%=xfer.receiver%>')">Balance</a></td>
+					</tr>
+		  		<% }); %>
+			</table>
+  		<% } %>
+	</div>
+
+	<!-- Reported -->
+	<div class="list">
+		<% if (!reports || reports.length<1) { %>
+			<table class="table-list">
+				<caption>No Reports</caption>
+			</table>
+  		<% } else { %>
+			<table class="table-list">
+				<caption>Reported</caption>
+				<tr><th>Date</th><th>Reason</th><th>Url</th><th>Contact</th><th>Status</th></tr>
+				<% reports.forEach(function(rep){ %>
+					<tr>
+						<td><%=format(rep.created)%></td>
+						<td><%=rep.reason%></td>
+						<td><%=rep.url%></td>
+						<td><%=rep.contact%></td>
+						<td><%=rep.status%></td>
+						<td>&nbsp</td>
+					</tr>
+		  		<% }); %>
+			</table>
+  		<% } %>
+	</div>
+
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script>
+var session = {};
+session.item = <%- JSON.stringify(item)||{} %>;
+
+
+async function newOwner() {
+	let buyer = $('buyer-id').value.toLowerCase();
+	if(!buyer || buyer=='' || !buyer.startsWith('0x')){ 
+		$('owner-msg').innerHTML = 'Error';
+		$('buyer-id').value = '0xAddress required'; 
+		return;
+	}
+	$('owner-msg').innerHTML = 'Wait...';
+	if(buyer.startsWith('one')){ 
+		buyer = addressToHex(buyer); 
+		$('buyer-id').value = buyer;
+	}
+	try {
+		let data = {
+			collection:  session.item.collection,
+			address:     session.item.address,
+			tokenid:     session.item.tokenid,
+			seller:      session.item.creator,
+			ownerid:     buyer,
+			saleprice:   session.item.saleprice,
+			tokentype:   session.item.type,
+			total:       session.item.copies, // original
+			copies:      1, // buyer
+			available:   1, // buyer
+			onsale:      false,
+			saletype:    2,
+			updateqty:   false
+		};
+		console.log('Transfer', data);
+		let hdr = {'content-type': 'application/json'};
+		let opt = { method: 'post', headers: hdr, body: JSON.stringify(data) };
+		let res = await fetch('/api/saveowner', opt);
+		let jsn = await res.json();
+		console.log('Res', jsn);
+		$('owner-msg').innerHTML = 'Success!';
+	} catch(ex) {
+		console.log('Error', ex);
+		$('owner-msg').innerHTML = 'Error: '+ex.message;
+	}
+}
+
+async function closeOrder(obj, oid) {
+	try {
+		console.log('Close order', oid);
+		let res = await fetch('/api/closeorder/'+oid);
+		let jsn = await res.json();
+		console.log('Res', jsn);
+		obj.innerHTML = 'Closed';
+	} catch(ex) {
+		console.log('Error', ex);
+	}
+}
+
+async function getLastOwner(col, tkn) {
+	try {
+		console.log('Last owner of', tkn);
+		$('last-id').value = 'Wait...';
+		let res = await fetch(`/api/lastowner/${col}/${tkn}`);
+		let jsn = await res.json();
+		console.log('Res', jsn);
+		$('last-id').value = jsn;
+	} catch(ex) {
+		console.log('Error', ex);
+	}
+}
+
+
+window.onload = startDavinci;
+</script>
+</body>
+</html>

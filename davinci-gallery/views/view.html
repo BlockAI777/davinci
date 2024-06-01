@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/common.css">
+	<link rel="stylesheet" type="text/css" href="/styles/view.css">
+	<!-- TWITTER PREVIEW -->
+	<meta name="twitter:card"         content="summary_large_image">
+	<meta name="twitter:creator"      content="https://twitter.com/davinci_gallery">
+	<meta name="twitter:site"         content="https://davinci.gallery">
+	<meta name="twitter:title"        content="<%=item.name||'DaVinci NFT'%>">
+	<meta name="twitter:description"  content="<%=item.description||'DaVinci NFT'%>">
+	<meta name="twitter:image:src"    content="https://davinci.gallery/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>">
+	<meta name="twitter:image:width"  content="250">
+	<meta name="twitter:image:height" content="250">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+<%
+function getRarity(copies) {
+	let num = parseInt(copies) || 1;
+	if(num==1)  { return 'Unique'; }
+	if(num<10)  { return 'Legendary'; }
+	if(num<50)  { return 'Epic'; }
+	if(num<100) { return 'Rare'; }
+	return 'Common';
+}
+function intOrDec(amount, decs=2) {
+	if(parseInt(amount)==amount) { return parseInt(amount); }
+	return parseFloat(amount).toFixed(decs);
+}
+function money(amount, decs=2) {
+	return parseFloat(amount).toFixed(decs);
+}
+function format(date, dateOnly=false) {
+	if(!date){ return ''; }
+	return dateOnly?date.toLocaleDateString():date.toLocaleString();
+}
+function timeAgo(date) {
+	let time = new Date(date).getTime();
+    const SECOND = 1000;
+    const MINUTE =   60 * SECOND;
+    const HOUR   =   60 * MINUTE;
+    const DAY    =   24 * HOUR;
+    const WEEK   =    7 * DAY;
+
+    // 03h 15m
+    // if timestamp given in seconds, convert to millis
+    if (time < 1000000000000) { time *= 1000; }
+
+    var now  = (new Date()).getTime();
+    var diff = now - time;
+    if (time > now || time <= 0) { return "never"; }
+
+    if (diff < MINUTE) {
+        return "just now";
+    } else if (diff < 2 * MINUTE) {
+        return "a minute ago";
+    } else if (diff < 50 * MINUTE) {
+        return parseInt(diff / MINUTE) + " minutes ago";
+    } else if (diff < 90 * MINUTE) {
+        return "an hour ago";
+    } else if (diff < 24 * HOUR) {
+        return parseInt(diff / HOUR) + " hours ago";
+    } else if (diff < 48 * HOUR) {
+        return "yesterday";
+    } else if (diff < WEEK) {
+        return parseInt(diff / DAY) + " days ago";
+    }
+
+    let text = (new Date(time)).toISOString().substr(0,10);
+    return text;
+}
+// 03h 15m
+function timeAgoShort(date) {
+	let time = new Date(date).getTime();
+    const SECOND_MILLIS = 1000;
+    const MINUTE_MILLIS =   60 * SECOND_MILLIS;
+    const HOUR_MILLIS   =   60 * MINUTE_MILLIS;
+    const DAY_MILLIS    =   24 * HOUR_MILLIS;
+    const WEEK_MILLIS   =    7 * DAY_MILLIS;
+
+    // if timestamp given in seconds, convert to millis
+    if (time < 1000000000000) { time *= 1000; }
+
+    var now  = (new Date()).getTime();
+    var diff = now - time;
+    if (time > now || time <= 0) { return "never"; }
+
+    if (diff < MINUTE_MILLIS) {
+        return "just now";
+    } else if (diff < 2 * MINUTE_MILLIS) {
+        return "1m ago";
+    } else if (diff < 50 * MINUTE_MILLIS) {
+        return parseInt(diff / MINUTE_MILLIS) + "m ago";
+    } else if (diff < 90 * MINUTE_MILLIS) {
+        return "1h ago";
+    } else if (diff < 24 * HOUR_MILLIS) {
+        return parseInt(diff / HOUR_MILLIS) + "h ago";
+    } else if (diff < 48 * HOUR_MILLIS) {
+        return "yesterday";
+    } else if (diff < WEEK_MILLIS) {
+        return parseInt(diff / DAY_MILLIS) + "d ago";
+    }
+
+    let text = (new Date(time)).toISOString().substr(0,10);
+	return text;
+}
+function markdown(text){
+	function clean(text){
+		return text.replace(/<(.*?)>/g, '');
+	}
+	function newline(text){
+		return text.replace(/(.*?)\n/g, function match(i, txt){ return txt+'<br>'; });
+	}
+	function bold(text){
+		return text.replace(/\*(.*?)\*/g, function match(i, txt){ return '<b>'+txt+'</b>'; });
+	}
+	function italic(text){
+		return text.replace(/_(.*?)_/g, function match(i, txt){ return '<i>'+txt+'</i>'; });
+	}
+	function strike(text){
+		return text.replace(/~(.*?)~/g, function match(i, txt){ return '<s>'+txt+'</s>'; });
+	}
+	function code(text){
+		return text.replace(/`(.*?)`/g, function match(i, txt){ return '<code>'+txt+'</code>'; });
+	}
+
+	text = clean(text);
+	text = newline(text);
+	text = bold(text);
+	text = italic(text);
+	text = strike(text);
+	text = code(text);
+	return text;
+}
+%>
+	<input type="hidden" id="address" value="<%=item.address%>">
+	<h1 class="title"><%=item.name%> <img class="icon-copy" src="/media/icon-copy.svg" title="Copy to clipboard" onclick="javascript:copyToClipboard(window.location.origin+'/view/<%=item.address%>')"></h1>
+	<div class="card-view fields">
+	<% if(config.isAdmin) { %>
+		<hbox class="admin start">
+			<button class="button-mini" onclick="javascript:window.location.href='/tools/tracker/<%=item.address%>'">Tracker</button>
+			<button class="button-mini" onclick="javascript:window.location.href='/counter/<%=item.address%>'">Counter</button>
+			<button class="button-mini" onclick="javascript:window.location.href='/tools/thumb/<%=item.cover%>'">Thumbnail</button>
+			<% if (item.verified) { %>
+				<button class="button-mini" onclick="javascript:window.location.href='/unverified/<%=item.creator%>'">Unverified</button>
+			<% } else { %>
+				<button class="button-mini" onclick="javascript:window.location.href='/verified/<%=item.creator%>'">Verified</button>
+			<% } %>
+			<% if (item.redflag) { %>
+				<button class="button-mini" onclick="javascript:window.location.href='/unflag/<%=item.creator%>'">Unflag</button>
+			<% } else { %>
+				<button class="button-mini" onclick="javascript:window.location.href='/redflag/<%=item.creator%>'">Red flag</button>
+			<% } %>
+			<button class="button-mini" onclick="javascript:window.location.href='/inactive/<%=item.address%>'"><%=item.inactive?'Active':'Inactive'%></button>
+			<button class="button-mini" onclick="javascript:window.location.href='/banuser/<%=item.creator%>'">Ban user</button>
+		</hbox>
+		<hbox class="cats start">
+			<button class="button-mini" onclick="categorize('<%=item.address%>', 0)">Digital Art</button>
+			<button class="button-mini" onclick="categorize('<%=item.address%>', 1)">Paintings</button>
+			<button class="button-mini" onclick="categorize('<%=item.address%>', 2)">Photos</button>
+			<button class="button-mini" onclick="categorize('<%=item.address%>', 3)">Kids</button>
+			<button class="button-mini" onclick="categorize('<%=item.address%>', 8)">Memes</button>
+			<button class="button-mini" onclick="categorize('<%=item.address%>', 9)">Private</button>
+		</hbox>
+	<% } %>
+		<div class="card-media">
+			<img class="card-image" src="/uploads/artwork/<%=item.cover%>" loading="lazy" onclick="javascript:copyToClipboard(window.location.origin+'/uploads/artwork/<%=item.cover%>')">
+			<% if (item.media=='music') { %>
+				<audio controls>
+					<source src="<%=item.resource%>" type="audio/mpeg">
+					Your browser does not support the audio element.
+				</audio>
+			<% } else if (item.media=='video') { %>
+				<video width="720" height="540" controls>
+				    <source src="<%=item.resource%>" type="video/mp4">
+					Your browser does not support the video tag.
+				</video>
+			<% } else if (item.media=='book') { %>
+				<iframe src="<%=item.resource%>" width="720" height="960"></iframe>
+			<% } else if (item.media=='model') { %>
+				<model-viewer src="<%=item.resource%>" style="width: 100%; height: 640px; margin: 0 auto;" alt="3D model" auto-rotate camera-controls></model-viewer>
+    			<!-- <babylon model="<%=item.resource%>" width="720" height="960"></babylon> -->
+			<% } %>
+		</div>
+		<div class="card-likes">
+			<div class="likes">
+				<img class="heart" src="/media/<%=config.theme=='lite-mode'?'icon-likes.png':'icon-likes-dark.png'%>" onclick="onLike('<%=item.address%>')" data-like="<%=item.favorite%>">
+				<img src="/media/<%=config.theme=='lite-mode'?'icon-views.png':'icon-views-dark.png'%>">
+				<label><%=item.views%></label>
+			</div> 
+			<div class="rarity"><%=getRarity(item.copies)%> <span id="available"><%=item.available%></span>/<%=item.copies%></div>
+		</div>
+
+		<div class="card-info">
+	  		<li class="card-title"><b><%=item.name||'Unnamed'%></b></li>
+	  		<li><%-markdown(item.description)%></li>
+	  	</div>
+		<div class="card-data">
+			<% if (config.user==item.owner) { %>
+			<div class="card-meta">
+		  		<li><label><a href="<%=config.explorer%>/#/address/<%=item.collection%>" target="_blank">NFT <%=item.type%></a></label></li>
+		  		<li><label><a href="<%=item.resource%>" target="_blank">Original <%=item.media%></a></label></li>
+		  		<li><label><a href="<%=item.metadata%>" target="_blank">Metadata</a></label></li>
+		  	</div>
+			<% } %>
+		  	<li><label>Token Id</label> <%=item.address%></li>
+	  		<li><label>Created on</label> <span class="local-time" data-time='<%=new Date(item.created).getTime()%>'><%=format(item.created)%></span></li>
+	  		<li><label>Collection</label> <a href="/explore/collection/<%=item.collection%>"><%=item.colname||item.collection.substr(0,10)%></a></></li>
+	  		<li><label>Author</label> <a href="/profile/<%=item.creator%>"><%=item.author||item.creator.substr(0,10)%></a> <% if (item.golden) { %><img class="golden" src="/media/golden16.png" title="Golden author"><% } %> <% if (item.verified) { %><img class="verified" src="/media/davinci_logo.svg" title="Verified author"><% } %> <% if (item.redflag) { %><img class="redflag" src="/media/redflag.svg" title="Copyright warning"><% } %> <a class="button-mini" href="/explore/artist/<%=item.creator%>">collection</a></li>
+			<% if (owners && owners.length>0) { %>
+				<% owners.forEach(function(owner){ %>
+	  				<li><label>• Owner</label> <a href="/profile/<%=owner.ownerid%>"><%=owner.name||owner.ownerid.substr(0,10)%></a> <% if (owner.golden) { %><img class="golden" src="/media/golden16.png" title="Golden author"><% } %> <% if (owner.verified) { %><img class="verified" src="/media/davinci_logo.svg" title="Verified author"><% } %> <% if (owner.redflag) { %><img class="redflag" src="/media/redflag.svg" title="Copyright warning"><% } %> (<%=owner.copies%>)  <a class="button-mini" href="/explore/artist/<%=owner.ownerid%>">collection</a></li>
+			  	<% }); %>
+			<% } else { %>
+	  			<li><label>Owner</label> <a href="/profile/<%=item.owner%>"><%=item.ownerx||item.owner.substr(0,10)%></a> <% if (item.ogolden) { %><img class="golden" src="/media/golden16.png" title="Golden owner"><% } %> <% if (item.overified) { %><img class="verified" src="/media/davinci_logo.svg" title="Verified owner"><% } %> <% if (item.oredflag) { %><img class="redflag" src="/media/redflag.svg" title="Copyright warning"><% } %> <a class="button-mini" href="/explore/artist/<%=item.owner%>">collection</a></li>
+			<% } %>
+	  		<li><label>Tags</label> <%=item.tags%></li>
+			<% if (config.user==item.owner) { %>
+		  		<li><label>Unlock Code</label> <%=item.unlockcode%></li>
+			<% } %>
+			<% if (item.ttit) { %>
+				<hr>
+	  			<h3>TIMELESS EVENT</h3>
+	  			<li><label>Title</label> <%=item.ttit%></li>
+	  			<li><label>Location</label> <%=item.tloc%></li>
+	  			<li><label>Start Date</label> <span class="local-time" data-time='<%=new Date(item.tini).getTime()%>'><%=format(item.tini)%></span></li>
+	  			<li><label>End Date</label> <span class="local-time" data-time='<%=new Date(item.tend).getTime()%>'><%=format(item.tend)%></span></li>
+	  			<li><label>Organizer</label> <%=item.torg%></li>
+	  			<li><label>Website</label> <%=item.tweb%></li>
+	  			<li><label>Bio</label> <%=item.tbio%></li>
+	  			<li><label>IPFS Video </label> <a href="<%=item.tlnk1%>" target="_blank"><%=item.tlnk1%></a></li>
+	  			<li><label>IPFS JSON  </label> <a href="<%=item.tlnk2%>" target="_blank"><%=item.tlnk2%></a></li>
+	  			<li><label>IPFS Banner</label> <a href="<%=item.tlnk3%>" target="_blank"><%=item.tlnk3%></a></li>
+			<% } %>
+
+  		</div>
+		<% if (item.saletype==1) { %>
+	  		<div id="enddate">Auction ends today</div>
+	  		<div id="forsale">No bids yet</div>
+  			<div id="royalty"></div>
+		<% } else { %>
+	  		<div id="forsale"><%=parseInt(item.saleprice)+' ONE'%> / <span id="priceusd"><%=(item.saleprice * config.oneusd.price).toFixed(2)+' USD'%></span></div>
+  			<div id="royalty"><%=intOrDec(item.royalties)+' % in royalties go to the author'%></div>
+		<% } %>
+		<% if (item.inactive || item.redflag) { %>
+	  		<div><button id="card-buy" class="disabled" disabled>INACTIVE</button></div>
+		<% } else if (!item.onsale || item.saletype==2) { %>
+	  		<div><button id="card-buy" class="disabled" disabled>NOT FOR SALE</button></div>
+		<% } else if (item.available < 1) { %>
+	  		<div><button id="card-buy" class="disabled" disabled>SOLD OUT</button></div>
+		<% } else if (item.owner == config.user) { %>
+  			<div><button id="card-buy" onclick="javascript:window.location.href='/edit/<%=item.address%>'">EDIT</button></div>
+		<% } else { %>
+			<% if (item.saletype==1) { %>
+				<% if (new Date(item.enddate) < new Date()) { %>
+		  			<div><button id="card-buy" class="onsale" disabled>AUCTION ENDED</button></div>
+				<% } else { %>
+	  				<li><input type="textbox" id="bidamount" class="edit-text" value="0"></li>
+		  			<div><button id="card-buy" class="onsale" onclick="onBidNow('<%=item.address%>')">PLACE BID</button></div>
+				<% } %>
+				<table id="order-bids" class="list-bids">
+				<% if (item.bids && item.bids.length > 0) { %>
+					<% item.bids.forEach(function(bid){ %>
+						<tr><td><span class="local-time" data-time="<%=new Date(bid.created).getTime()%>"><%=format(bid.created)%></span></td><td><a href="/profile/<%=bid.bidder%>"><%=bid.name||'Anonymous'%></a></td><td><%=money(bid.price)%> ONE</td></tr>
+			  		<% }); %>
+				<% } %>
+				</table>
+			<% } else { %>
+	  			<div><button id="card-buy" class="onsale" onclick="onBuyNow('<%=item.address%>')">BUY NOW</button></div>
+			  	<div><a id="img-check" class="base-small" href="<%='https://www.google.com/searchbyimage?site=search&sa=X&image_url=http://'+config.host+'/uploads/artwork/'+item.cover%>" target="_blank">CHECK IMAGE</a></div>
+			<% } %>
+		<% } %>
+		<li id="view-status">One payment confirmation required</li>
+	  	<div><button id="button-resell" class="text-only" onclick="javascript:window.location.href='/resell/<%=item.address%>'">Resell Market</button> <button id="button-report" class="text-only" onclick="onReported('<%=item.address%>')">Report Token</button></div>
+
+		<!-- Orders -->
+		<div class="list">
+			<% if (!orders || orders.length<1) { %>
+				<table class="table-list">
+					<caption>No Orders</caption>
+				</table>
+	  		<% } else { %>
+				<table class="table-list">
+					<caption>Sell Orders</caption>
+					<tr><th>Date</th><th>Type</th><th>Order</th><th>Seller</th><th>Qty</th><th>Price</th><th>Status</th><th>Original</th></tr>
+					<% orders.forEach(function(order){ %>
+						<tr>
+							<td><%=format(order.created, true)%></td>
+							<td><%=['Sale','Auction','NFS'][order.ordertype]%></td>
+							<td><a class="pre" href="/order/<%=order.address%>"><%=order.address.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=order.address%>')"></td>
+							<td><a class="pre" href="/profile/<%=order.seller%>"><%=order.seller.substr(0,10)%></a> <img class="icon-copy" src="/media/icon-copy.svg" onclick="javascript:copyToClipboard('<%=order.seller%>')"></td>
+							<td><%=order.amount%></td>
+							<td><%=order.sellprice%></td>
+							<td><%=['Draft','Open','Closed','Cancelled'][order.status]%></td>
+							<td><%=order.original?'√':'R'%></td>
+						</tr>
+			  		<% }); %>
+				</table>
+	  		<% } %>
+		</div>
+
+	  	<div class="comments">
+	  		<h2>Comments</h2>
+	  		<div id="comments-list">
+			<% if (comments && comments.length>0) { %>
+				<% comments.forEach(function(comment){ %>
+					<hbox id="comment-<%=comment.comid%>" class="comment" data-comid="<%=comment.comid%>">
+						<vbox class="comment-img">
+							<img src="/uploads/avatars/<%=comment.avatar||'alert.png'%>">
+						</vbox>
+						<vbox class="comment-info">
+							<h1><%=comment.name||'Anonymous'%></h1>
+							<div>
+								<h2><%=timeAgo(comment.created)%></h2>
+								<% if (config.user==item.creator) { %><button class="plain" onclick="delComment(<%=comment.comid%>)"><img src="/media/delete.png" width="12px" height="12px"> REMOVE</button><% } %>
+							</div>
+							<p><%=comment.comment%></p>
+						</vbox>
+					</hbox>
+				<% }); %>
+			<% } else { %>
+				<p>Be the first to comment</p>
+			<% } %>
+	  		</div>
+	  		<vbox class="new-comment">
+	  			<textarea id="comment-text"></textarea>
+	  			<hbox class="comment-bar"><button id="comment-action" class="base-small" onclick="onComment('<%=item.address%>')">COMMENT</button> <small>Max 1000 characters</small></hbox>
+	  		</vbox>
+	  	</div>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<templates>
+	<template id="tmp-comment">
+		<hbox class="comment" data-comid="{comid}">
+			<vbox class="comment-img">
+				<img src="/uploads/avatars/{avatar}">
+			</vbox>
+			<vbox class="comment-info">
+				<h1>{user}</h1>
+				<h2>{time}</h2>
+				<p>{text}</p>
+			</vbox>
+		</hbox>
+	</template>
+</templates>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/Market3.js"></script>
+<script src="/contracts/Auctions.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/view.js"></script>
+<% if(item.media=='model') { %>
+<!-- <script src="/scripts/babylon.js"></script> -->
+<script type="module" src="/scripts/model-viewer.min.js"></script>
+<% } %>
+<% if(config.isAdmin) { %>
+<script src="/scripts/admin.js"></script>
+<% } %>
+<script>
+session.item = <%- JSON.stringify(item)||{} %>;
+session.user = '<%=config.user%>';
+session.oneusd = <%- JSON.stringify(config.oneusd)||{price:0} %>;
+session.comments = <%- JSON.stringify(comments)||[] %>;
+</script>
+</body>
+</html>

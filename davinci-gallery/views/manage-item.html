@@ -1,0 +1,30 @@
+<div class="card">
+	<div class="cover">
+		<% if (item.media=='video') { %>
+			<svg class="icon-media" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#fff" d="M336.2 64H47.8C21.4 64 0 85.4 0 111.8v288.4C0 426.6 21.4 448 47.8 448h288.4c26.4 0 47.8-21.4 47.8-47.8V111.8c0-26.4-21.4-47.8-47.8-47.8zm189.4 37.7L416 177.3v157.4l109.6 75.5c21.2 14.6 50.4-.3 50.4-25.8V127.5c0-25.4-29.1-40.4-50.4-25.8z"></path></svg>
+		<% } %>
+  		<% if (item.available > 0) { %>
+			<a href="/edit/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'"></a>
+  		<% } else { %>
+			<a href="/view/<%=item.address%>"><img class="nft" src="/uploads/thumbs/<%=item.thumbnail||'nopic.png'%>" onerror="this.src='/media/logobw.svg'"></a>
+  		<% } %>
+	</div>
+	<li class="hbox">
+		<h1><%=item.name%></h1>
+		<img class="heart" src="/media/icon-likes.png" onclick="onLike('<%=item.address%>')" data-like="<%=item.favorite%>">
+	</li>
+	<li class="hbox">
+		<h2>by <a href="/profile/<%=item.author||item.creator%>"><%=item.author||item.creator.substr(0,10)%></a> <% if (item.golden) { %><img class="golden" src="/media/golden16.png" title="Golden author"><% } %> <% if (item.verified) { %><img class="verified" src="/media/davinci_logo.svg" title="Verified author"><% } %> <% if (item.redflag) { %><img class="redflag" src="/media/redflag.svg" title="Copyright warning"><% } %></h2>
+		<div class="likes">
+			<label class="likes-count"><%=item.views%></label>
+			<img src="/media/icon-views.png">
+		</div>
+	</li>
+	<li class="hbox">
+		<span class="price"><%=parseInt(item.saleprice)%> ONE</span> 
+		<span class="rarity"><a name="count" href="javascript:void(0)" onclick="recount('<%=item.address%>', this)"><span class="available"><%=item.qty%></span>/<span class="copies"><%=item.copies%></span></a></span>
+	</li>
+	<li class="hbox nopad">
+		<button class="buy" data-address="<%=item.address%>" onclick="onManage(this)">EDIT</button>
+	</li>
+</div>

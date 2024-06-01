@@ -1,0 +1,75 @@
+.title { margin-top: 60px; }
+.card-title { font-size: 150%; }
+.card-view { width: 720px; margin: 0 auto; padding: 40px; border: 1px solid var(--border-primary); box-shadow: 0 0 5px 1px #00000011; }
+.card-image { width: 100%; max-width: 100%; }
+.card-info {}
+.card-data { margin: 40px 0; text-align: left; }
+.card-data li { margin: 0.5em; white-space: nowrap; overflow: hidden; }
+.card-data label { display: inline-block; width: 120px; font-weight: bold; }
+
+.card-meta { display: flex; flex-direction: row; justify-content: center; align-items: center; margin-bottom: 40px; padding: 6px 10px; font-size: 80%; font-weight: normal; }
+.card-meta li { display: inline-block; padding: 4px 10px; background: var(--back-alternate); border: 1px solid var(--border-secondary); border-radius: 1em; }
+.card-meta li:first-child { margin-left: 0; }
+.card-meta label { display: inline; margin: 0 10px; }
+.card-meta a { text-decoration: none; color: #00ade8; }
+.card-likes { display: flex; flex-direction: row; justify-content: center; align-items: center; padding: 6px 10px; font-size: 80%; font-weight: normal; }
+.likes { display: flex; align-items: center; width: 50%; text-align: left; }
+.likes img { width: 18px; height: 18px; margin-right: 6px; }
+.likes img.heart { cursor: pointer; }
+.likes img.heart[data-like=true] { content:url('/media/icon-liked.png'); }
+.rarity { width: 50%; text-align: right; }
+
+
+#forsale { margin-bottom: 5px; font-size: 120%; font-weight: bold; }
+#royalty { margin-bottom: 10px; font-size: 90%; font-weight: normal; }
+#card-buy { width: 250px; padding: 15px 30px; background-color: #00ade8; color: #fff; border-radius: 4px; border: none; letter-spacing: 1.5px; font-size: 100%; outline: none; cursor: pointer; }
+#card-buy:disabled { background-color: #aaaaaa; color: #333; cursor: default; }
+#card-buy.disabled { background-color: #aaaaaa; color: #333; cursor: default; }
+#view-status { margin-top: 10px; padding: 6px; font-size: 90%; text-align: center; border: 1px solid var(--border-primary); border-radius: 4px; background-color: var(--back-alternate); }
+
+#card-send { width: 250px; margin: 10px 20px; background-color: #00cc88; }
+#img-check { display: inline-block; margin-top: 10px; }
+
+fieldset { margin-top: 30px; border: 1px solid var(--border-primary); border-radius: 8px; background-color: var(--back-secondary); }
+fieldset legend { font-weight: bold; }
+.fields li { margin: 14px 0; }
+.fields label { font-weight: 600; }
+.fields label.disabled { color: #aaa; }
+.fields label.align-top { vertical-align: top; }
+.fields label.warn { visibility: hidden; color: #C00; font-weight: 500; font-size: 80%; }
+.fields label.note { margin-top: 4px; font-weight: normal; font-size: 90%; color: #666; }
+.fields input[type=textbox] { padding: 8px; font-size: 90%; color: var(--color-primary); background-color: var(--back-highlight); border: 1px solid var(--border-secondary); border-radius: 4px; }
+.fields input[type=textbox]::active { outline: 1px solid var(--border-primary); }
+.fields input[type=textbox]::placeholder { color: var(--color-secondary); }
+.fields input[type=radio] { cursor: pointer; }
+.fields input[type=date] { padding: 6px; }
+.fields input.text-long { width: 500px; }
+.fields input.text-inline { width: 200px; margin-right: 10px; }
+.fields textarea { width: 500px; height: 60px; padding: 8px; font-family: avenir, sans-serif; font-size: 90%; color: var(--color-primary); background-color: var(--back-highlight); border-radius: 4px; border: 1px solid var(--border-secondary); }
+.fields textarea::active { outline: 1px solid var(--border-primary); }
+.fields textarea::placeholder { color: #bbb; }
+.fields .option { display: inline-block; margin: 0; padding: 0 20px 0 0; }
+.fields .option label { display: inline-block; margin: 0; cursor: pointer; font-weight: normal; }
+.fields .option label.disabled { color: #aaa; }
+#bidamount { width: 240px; text-align: center; }
+.txtpad { margin-left: 130px; }
+
+.list-bids { width: 500px; margin: 10px auto; border: 1px solid #e3e4ef; color: #888; }
+.list-bids tr:nth-child(1) td { color: var(--color-primary); }
+/*
+.list-bids td:nth-child(1) { width: 50%; }
+.list-bids td:nth-child(2) { width: 30%; }
+.list-bids td:nth-child(3) { width: 20%; }
+*/
+
+.list { display: flex; flex-direction: column; justify-content: flex-start; margin: 0; }
+.table-list { margin: 20px 0px; }
+.table-list caption { margin-left: 0px; font-size: 1.5em; font-weight: bold; text-align: left; }
+.table-list th { text-align: left; border-top: 2px solid #ccc;  border-bottom: 2px solid #ccc; }
+.table-list td { text-align: left; }
+
+
+
+@media screen and (max-width: 720px) {
+	.card-view { width: 90%; max-width: 90%; padding: 4%; }
+}

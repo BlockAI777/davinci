@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('_head.html'); %>
+	<link rel="stylesheet" type="text/css" href="/styles/cards.css">
+</head>
+<body class="<%= config.theme %>">
+<header>
+	<%- include('_header.html'); %>
+</header>
+<%- include('_topbar.html'); %>
+<main>
+	<h1 class="title">My Collection</h1>
+	<div id="cards">
+		<% if (!list || list.length<1) { %>
+			<vbox>
+	  			<h3>You don't own any collectible</h3>
+				<img src="/media/logobw.svg" width="200px">
+	  			<h2>Would you like to create one?</h2>
+	  			<a href="./create" id="create">CREATE!</a>
+	  			<p>You can buy collectibles in the marketplace</p>
+			</vbox>
+  		<% } else { %>
+			<% list.forEach(function(item){ %>
+	    		<%- include('manage-item.html', {item:item}) %>
+	  		<% }); %>
+  		<% } %>
+	</div>
+	<% if (list && list.length>=config.limit) { %>
+		<div id="pager">
+			<button id="button-pager" class="base-small" onclick="moreMycollection()">SEE MORE</button>
+		</div>
+  	<% } %>
+	<div id="import-info">
+		<p>You can import tokens created or bought in other marketplaces</p>
+		<button class="base" onclick="onImport()">IMPORT TOKEN</button>
+	</div>
+</main>
+<footer>
+	<%- include('_foot.html'); %>
+</footer>
+<%- include('_popups.html'); %>
+<script src="/modules/web3.min.js"></script>
+<script src="/modules/HarmonyJs.browser.js"></script>
+<script src="/contracts/HRC20.js"></script>
+<script src="/contracts/Market3.js"></script>
+<script src="/contracts/DavinciToken.js"></script>
+<script src="/contracts/DavinciMultipleToken.js"></script>
+<script src="/scripts/config.js"></script>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/wallet.js"></script>
+<script src="/scripts/explore.js"></script>
+<script src="/scripts/import.js"></script>
+</body>
+</html>
